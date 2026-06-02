@@ -76,7 +76,9 @@
 
   function getBoardJsonPath() {
     const base = window.location.pathname.replace(/\/[^/]*$/, '') || '/';
-    return base + (base.endsWith('/') ? '' : '/') + 'boards/sample-board.json';
+    // Default board shipped with the site (GitHub Pages-friendly).
+    // Stored as an extracted "portable ZIP" under boards/from-blerp-portable/.
+    return base + (base.endsWith('/') ? '' : '/') + 'boards/from-blerp-portable/board.json';
   }
 
   const CATEGORY_UI_KEY_PREFIX = 'soundboard-category-state:';
@@ -1751,6 +1753,19 @@
     fetch(url)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error('Failed to load board'))))
       .then((data) => {
+        // Portable ZIP exports use `zip:` URLs like `zip:audio/foo.mp3`.
+        // When we ship the extracted ZIP as static files, rewrite those URLs to real relative paths.
+        const boardBase = url.replace(/\/[^/]*$/, '/');
+        if (data && Array.isArray(data.sounds)) {
+          for (const s of data.sounds) {
+            if (s && typeof s.fileUrl === 'string' && s.fileUrl.startsWith('zip:')) {
+              s.fileUrl = boardBase + s.fileUrl.slice('zip:'.length);
+            }
+            if (s && typeof s.imageUrl === 'string' && s.imageUrl.startsWith('zip:')) {
+              s.imageUrl = boardBase + s.imageUrl.slice('zip:'.length);
+            }
+          }
+        }
         const result = Board.validateBoard(data);
         if (!result.ok) throw new Error(result.error);
         setBoard(Board.normalizeBoard(data));
