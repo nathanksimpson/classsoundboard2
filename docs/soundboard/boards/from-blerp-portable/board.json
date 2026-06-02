@@ -4,21 +4,21 @@
   "name": "From Blerp",
   "description": "Exported from Blerp My Stream",
   "createdAt": "2026-06-02T06:11:54.082Z",
-  "updatedAt": "2026-06-02T06:13:07.343Z",
+  "updatedAt": "2026-06-02T11:17:07.490Z",
   "sounds": [
     {
       "id": "62b6d64db9b4e01c7d2dcd0b",
       "title": "CAN YOU TAKE ME HIGHER - Creed",
       "fileUrl": "zip:audio/62b6d64db9b4e01c7d2dcd0b.mp3",
       "imageUrl": "zip:images/62b6d64db9b4e01c7d2dcd0b.png",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
       "loop": false,
       "momentary": false,
-      "startMs": null,
-      "endMs": 6530000,
+      "startMs": 0,
+      "endMs": 6500,
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
@@ -34,14 +34,14 @@
       "title": "oops",
       "fileUrl": "zip:audio/65bcd687992ce75f00413024.mp3",
       "imageUrl": "zip:images/65bcd687992ce75f00413024.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
       "loop": false,
       "momentary": false,
-      "startMs": null,
-      "endMs": 1901000,
+      "startMs": 0,
+      "endMs": 1700,
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
@@ -57,7 +57,7 @@
       "title": "Why why why",
       "fileUrl": "zip:audio/601052745f8c48001599d241.mp3",
       "imageUrl": "zip:images/601052745f8c48001599d241.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -65,7 +65,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 4776000,
-      "hotkey": "",
+      "hotkey": "Y",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 4776,
@@ -80,7 +80,7 @@
       "title": "Brother Ew",
       "fileUrl": "zip:audio/65d0d92f658e54b628f3f0a6.mp3",
       "imageUrl": "zip:images/65d0d92f658e54b628f3f0a6.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -88,7 +88,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 10150000,
-      "hotkey": "",
+      "hotkey": "E",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 10150,
@@ -103,7 +103,7 @@
       "title": "Luigi Hurry Up",
       "fileUrl": "zip:audio/65c6a8ca1cb463cfb280e6ed.mp3",
       "imageUrl": "zip:images/65c6a8ca1cb463cfb280e6ed.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -111,7 +111,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 1750000,
-      "hotkey": "",
+      "hotkey": "Shift+E",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 1750,
@@ -126,7 +126,7 @@
       "title": "rick roll",
       "fileUrl": "zip:audio/6089476952accc001a048e9c.mp3",
       "imageUrl": "zip:images/6089476952accc001a048e9c.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -149,7 +149,7 @@
       "title": "Who's that Pokémon?",
       "fileUrl": "zip:audio/62d0b63faf6b58818cb6b202.mp3",
       "imageUrl": "zip:images/62d0b63faf6b58818cb6b202.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -172,7 +172,7 @@
       "title": "objection",
       "fileUrl": "zip:audio/67a29c1a562d131ba6154de6.mp3",
       "imageUrl": "zip:images/67a29c1a562d131ba6154de6.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -180,7 +180,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 1879000,
-      "hotkey": "",
+      "hotkey": "Shift+O",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 1879,
@@ -195,7 +195,7 @@
       "title": "Wii Sports - Title (HQ)",
       "fileUrl": "zip:audio/65fdfc8f35fab459ef38308a.mp3",
       "imageUrl": "zip:images/65fdfc8f35fab459ef38308a.webp",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -218,7 +218,7 @@
       "title": "wii mii",
       "fileUrl": "zip:audio/62142c127211e6695492f13a.mp3",
       "imageUrl": "zip:images/62142c127211e6695492f13a.webp",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -241,7 +241,7 @@
       "title": "Shooting Stars",
       "fileUrl": "zip:audio/5d9c18fe73232d0005915149.mp3",
       "imageUrl": "zip:images/5d9c18fe73232d0005915149.webp",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -264,7 +264,7 @@
       "title": "WOOPSIE (MORTAL KOMBAT)",
       "fileUrl": "zip:audio/657a1061b839249adac06101.mp3",
       "imageUrl": "zip:images/657a1061b839249adac06101.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -287,7 +287,7 @@
       "title": "Drum Roll",
       "fileUrl": "zip:audio/616e612701fa1e00140ed9c3.mp3",
       "imageUrl": "zip:images/616e612701fa1e00140ed9c3.png",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -310,7 +310,7 @@
       "title": "Suspense",
       "fileUrl": "zip:audio/616e59c3be67de001b784166.mp3",
       "imageUrl": "zip:images/616e59c3be67de001b784166.png",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -333,15 +333,15 @@
       "title": "Suspense alert",
       "fileUrl": "zip:audio/60426db4d6890d001498865d.mp3",
       "imageUrl": "zip:images/60426db4d6890d001498865d.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
       "loop": false,
       "momentary": false,
-      "startMs": null,
-      "endMs": 1632000,
-      "hotkey": "",
+      "startMs": 0,
+      "endMs": 1570,
+      "hotkey": "Shift+1",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 1632,
@@ -356,7 +356,7 @@
       "title": "Suspenso",
       "fileUrl": "zip:audio/6182259875b16700152896c5.mp3",
       "imageUrl": "zip:images/6182259875b16700152896c5.png",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -379,7 +379,7 @@
       "title": "sad",
       "fileUrl": "zip:audio/60d36e98f7d521001ab7551f.mp3",
       "imageUrl": "zip:images/60d36e98f7d521001ab7551f.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -387,7 +387,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 10272000,
-      "hotkey": "",
+      "hotkey": "9",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 10272,
@@ -402,15 +402,15 @@
       "title": "Heavens Choir (justketh)",
       "fileUrl": "zip:audio/6194af2aab435c001490786a.mp3",
       "imageUrl": "zip:images/6194af2aab435c001490786a.webp",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
-      "loop": false,
+      "loop": true,
       "momentary": false,
       "startMs": null,
       "endMs": 10272000,
-      "hotkey": "",
+      "hotkey": "Shift+H",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 10272,
@@ -425,7 +425,7 @@
       "title": "OOF",
       "fileUrl": "zip:audio/65f542d053a1c61b05074e88.mp3",
       "imageUrl": "zip:images/65f542d053a1c61b05074e88.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -445,18 +445,18 @@
     },
     {
       "id": "62febbddc26cc15a295a2592",
-      "title": "censor beep",
+      "title": "censor beep...",
       "fileUrl": "zip:audio/62febbddc26cc15a295a2592.mp3",
       "imageUrl": "zip:images/62febbddc26cc15a295a2592.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
-      "loop": false,
-      "momentary": false,
-      "startMs": null,
-      "endMs": 5030000,
-      "hotkey": "",
+      "loop": true,
+      "momentary": true,
+      "startMs": 770,
+      "endMs": 4780,
+      "hotkey": ".",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 5030,
@@ -471,7 +471,7 @@
       "title": "Crickets",
       "fileUrl": "zip:audio/65c249d7492bbaf8a7c691dd.mp3",
       "imageUrl": "zip:images/65c249d7492bbaf8a7c691dd.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -494,15 +494,15 @@
       "title": "Vine Boom",
       "fileUrl": "zip:audio/6227c0524c71e7548cea02c1.mp3",
       "imageUrl": "zip:images/6227c0524c71e7548cea02c1.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
       "loop": false,
-      "momentary": false,
+      "momentary": true,
       "startMs": null,
       "endMs": 2784000,
-      "hotkey": "",
+      "hotkey": "B",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 2784,
@@ -517,7 +517,7 @@
       "title": "Hurry Up",
       "fileUrl": "zip:audio/5eb620a31fdb710005aba0b3.mp3",
       "imageUrl": "zip:images/5eb620a31fdb710005aba0b3.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -540,7 +540,7 @@
       "title": "I can smell the failure - Steven He",
       "fileUrl": "zip:audio/619d107c7692440014449e44.mp3",
       "imageUrl": "zip:images/619d107c7692440014449e44.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -563,7 +563,7 @@
       "title": "J. Jonah Jameson Spiderman Laugh",
       "fileUrl": "zip:audio/5d014f89531c0d0006228b20.mp3",
       "imageUrl": "zip:images/5d014f89531c0d0006228b20.webp",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -586,7 +586,7 @@
       "title": "Stop! Wait-A-Minute-",
       "fileUrl": "zip:audio/5d016f37531c0d000622fde9.mp3",
       "imageUrl": "zip:images/5d016f37531c0d000622fde9.png",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -594,7 +594,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 2520000,
-      "hotkey": "",
+      "hotkey": "M",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 2520,
@@ -609,7 +609,7 @@
       "title": "Good- Emperor Palpatine Sounds",
       "fileUrl": "zip:audio/5d55dfcc5757cb00059231ec.mp3",
       "imageUrl": "zip:images/5d55dfcc5757cb00059231ec.png",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -617,7 +617,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 3192000,
-      "hotkey": "",
+      "hotkey": "G",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 3192,
@@ -632,7 +632,7 @@
       "title": "Banana Chacha",
       "fileUrl": "zip:audio/6281e63a340b6e1803947b2f.mp3",
       "imageUrl": "zip:images/6281e63a340b6e1803947b2f.webp",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -655,7 +655,7 @@
       "title": "Kill Bill Siren",
       "fileUrl": "zip:audio/5e56df1d053b3100052f6473.mp3",
       "imageUrl": "zip:images/5e56df1d053b3100052f6473.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -678,7 +678,7 @@
       "title": "ObiWan - Hello there!",
       "fileUrl": "zip:audio/5ccd7f1f9cb401004a21b9c2.mp3",
       "imageUrl": "zip:images/5ccd7f1f9cb401004a21b9c2.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -701,7 +701,7 @@
       "title": "Wrong Answer GameShow",
       "fileUrl": "zip:audio/5d016bae531c0d000622f1ae.mp3",
       "imageUrl": "zip:images/5d016bae531c0d000622f1ae.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -709,7 +709,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 1872000,
-      "hotkey": "",
+      "hotkey": "X",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 1872,
@@ -724,7 +724,7 @@
       "title": "Jeopardy time out",
       "fileUrl": "zip:audio/5d013c63531c0d00062246bc.mp3",
       "imageUrl": "zip:images/5d013c63531c0d00062246bc.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -732,7 +732,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 912000,
-      "hotkey": "",
+      "hotkey": "Shift+J",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 912,
@@ -747,7 +747,7 @@
       "title": "Jeopardy Theme",
       "fileUrl": "zip:audio/5d013982531c0d0006223e3f.mp3",
       "imageUrl": "zip:images/5d013982531c0d0006223e3f.png",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -755,7 +755,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 14088000,
-      "hotkey": "",
+      "hotkey": "J",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 14088,
@@ -770,15 +770,15 @@
       "title": "Final Fantasy Victory",
       "fileUrl": "zip:audio/6494c959a7978a0b766e64f7.mp3",
       "imageUrl": "zip:images/6494c959a7978a0b766e64f7.webp",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
       "loop": false,
       "momentary": false,
-      "startMs": null,
-      "endMs": 9950000,
-      "hotkey": "",
+      "startMs": 0,
+      "endMs": 9890,
+      "hotkey": "V",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 9950,
@@ -793,7 +793,7 @@
       "title": "I'm scared! - Bill Wurtz",
       "fileUrl": "zip:audio/62154c3cdd4bcc6f86a8c6a9.mp3",
       "imageUrl": "zip:images/62154c3cdd4bcc6f86a8c6a9.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -816,7 +816,7 @@
       "title": "minecraft zombie",
       "fileUrl": "zip:audio/652f4174a7cb59f2638db8ef.mp3",
       "imageUrl": "zip:images/652f4174a7cb59f2638db8ef.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -839,7 +839,7 @@
       "title": "OH MY GOD",
       "fileUrl": "zip:audio/63322c282d5621137373f075.mp3",
       "imageUrl": "zip:images/63322c282d5621137373f075.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -847,7 +847,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 1666000,
-      "hotkey": "",
+      "hotkey": "O",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 1666,
@@ -862,7 +862,7 @@
       "title": "raining tacos short",
       "fileUrl": "zip:audio/6611684761accbd04934dbc4.mp3",
       "imageUrl": "zip:images/6611684761accbd04934dbc4.png",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -885,7 +885,7 @@
       "title": "Great",
       "fileUrl": "zip:audio/5dbe32f40ec05b000578052c.mp3",
       "imageUrl": "zip:images/5dbe32f40ec05b000578052c.webp",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -893,7 +893,7 @@
       "momentary": false,
       "startMs": null,
       "endMs": 696000,
-      "hotkey": "",
+      "hotkey": "R",
       "color": "#4a9eff",
       "extra": {
         "blerpDuration": 696,
@@ -908,7 +908,7 @@
       "title": "WHAT - JonTron",
       "fileUrl": "zip:audio/627925fcf41c4ca1c86d72bb.mp3",
       "imageUrl": "zip:images/627925fcf41c4ca1c86d72bb.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -916,10 +916,14 @@
       "momentary": false,
       "startMs": null,
       "endMs": 1584000,
-      "hotkey": "",
+      "hotkey": "W",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 1584
+        "blerpDuration": 1584,
+        "normGain": 1.1525697725071877,
+        "normAnalyzedAt": "2026-06-02T06:13:17.893Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.440082474381644
       }
     },
     {
@@ -927,7 +931,7 @@
       "title": "stop it, get some help",
       "fileUrl": "zip:audio/601786c0d329850013fc90fa.mp3",
       "imageUrl": "zip:images/601786c0d329850013fc90fa.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -935,10 +939,14 @@
       "momentary": false,
       "startMs": null,
       "endMs": 2280000,
-      "hotkey": "",
+      "hotkey": "S",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2280
+        "blerpDuration": 2280,
+        "normGain": 1.481428188646894,
+        "normAnalyzedAt": "2026-06-02T06:13:18.049Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.95655440056466
       }
     },
     {
@@ -946,7 +954,7 @@
       "title": "YESSSSSSSSSS- Bill Wurtz Soundboard",
       "fileUrl": "zip:audio/5d590b225757cb0005a6ec8e.mp3",
       "imageUrl": "zip:images/5d590b225757cb0005a6ec8e.png",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -954,10 +962,14 @@
       "momentary": false,
       "startMs": null,
       "endMs": 3144000,
-      "hotkey": "",
+      "hotkey": "Shift+Y",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 3144
+        "blerpDuration": 3144,
+        "normGain": 1.1801055809173295,
+        "normAnalyzedAt": "2026-06-02T06:13:18.311Z",
+        "normAlgoVersion": 2,
+        "normLufs": -17.46271820405899
       }
     },
     {
@@ -965,7 +977,7 @@
       "title": "Anime wow",
       "fileUrl": "zip:audio/5f973c5faefc84000dbd5939.mp3",
       "imageUrl": "zip:images/5f973c5faefc84000dbd5939.webp",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -973,10 +985,14 @@
       "momentary": false,
       "startMs": null,
       "endMs": 2376000,
-      "hotkey": "",
+      "hotkey": "A",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2376
+        "blerpDuration": 2376,
+        "normGain": 1.4530345767603516,
+        "normAnalyzedAt": "2026-06-02T06:13:18.467Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.43044822226822
       }
     },
     {
@@ -984,7 +1000,7 @@
       "title": "Just.. DO IT!",
       "fileUrl": "zip:audio/5b237fbafca7167a35619c70.mp3",
       "imageUrl": "zip:images/5b237fbafca7167a35619c70.webp",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -995,7 +1011,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 1944
+        "blerpDuration": 1944,
+        "normGain": 1.2292033664757336,
+        "normAnalyzedAt": "2026-06-02T06:13:18.619Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.43424670374994
       }
     },
     {
@@ -1003,7 +1023,7 @@
       "title": "Mario Kart start race",
       "fileUrl": "zip:audio/5d017e59531c0d00062326e0.mp3",
       "imageUrl": "zip:images/5d017e59531c0d00062326e0.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1011,10 +1031,14 @@
       "momentary": false,
       "startMs": null,
       "endMs": 4896000,
-      "hotkey": "",
+      "hotkey": "3",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 4896
+        "blerpDuration": 4896,
+        "normGain": 1.3950329498641827,
+        "normAnalyzedAt": "2026-06-02T06:13:18.907Z",
+        "normAlgoVersion": 2,
+        "normLufs": -18.1043500107347
       }
     },
     {
@@ -1022,7 +1046,7 @@
       "title": "Hey Listen",
       "fileUrl": "zip:audio/5ff6747295c137001be3455c.mp3",
       "imageUrl": "zip:images/5ff6747295c137001be3455c.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1033,7 +1057,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 1704
+        "blerpDuration": 1704,
+        "normGain": 1.0913781059789738,
+        "normAnalyzedAt": "2026-06-02T06:13:19.063Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.396887150280776
       }
     },
     {
@@ -1041,7 +1069,7 @@
       "title": "Beautiful",
       "fileUrl": "zip:audio/5dbe322d0ec05b000578028f.mp3",
       "imageUrl": "zip:images/5dbe322d0ec05b000578028f.webp",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1052,7 +1080,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 1608
+        "blerpDuration": 1608,
+        "normGain": 1.6846485236728512,
+        "normAnalyzedAt": "2026-06-02T06:13:19.336Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.964437318768805
       }
     },
     {
@@ -1060,7 +1092,7 @@
       "title": "Who wants to be a millionaire",
       "fileUrl": "zip:audio/5e018eda1300740005043c1e.mp3",
       "imageUrl": "zip:images/5e018eda1300740005043c1e.webp",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1068,10 +1100,14 @@
       "momentary": false,
       "startMs": null,
       "endMs": 10200000,
-      "hotkey": "",
+      "hotkey": "Ctrl+I",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 10200
+        "blerpDuration": 10200,
+        "normGain": 1.0551910650101841,
+        "normAnalyzedAt": "2026-06-02T06:13:19.726Z",
+        "normAlgoVersion": 2,
+        "normLufs": -20.090601607162757
       }
     },
     {
@@ -1079,7 +1115,7 @@
       "title": "Yay! Children Sound",
       "fileUrl": "zip:audio/5fa82320434c58000fe29c20.mp3",
       "imageUrl": "zip:images/5fa82320434c58000fe29c20.webp",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1090,7 +1126,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 5664
+        "blerpDuration": 5664,
+        "normGain": 1.2748968671077283,
+        "normAnalyzedAt": "2026-06-02T06:13:19.897Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.6620563515013
       }
     },
     {
@@ -1098,7 +1138,7 @@
       "title": "You Can Do It",
       "fileUrl": "zip:audio/5cf7e11d2d9781000518fbc6.mp3",
       "imageUrl": "zip:images/5cf7e11d2d9781000518fbc6.webp",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1106,10 +1146,14 @@
       "momentary": false,
       "startMs": null,
       "endMs": 10200000,
-      "hotkey": "",
+      "hotkey": "C",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 10200
+        "blerpDuration": 10200,
+        "normGain": 0.9851972764773361,
+        "normAnalyzedAt": "2026-06-02T06:13:20.145Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.075589157936502
       }
     },
     {
@@ -1117,7 +1161,7 @@
       "title": "No Good",
       "fileUrl": "zip:audio/6127750070a32d001c09a0b2.mp3",
       "imageUrl": "zip:images/6127750070a32d001c09a0b2.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1128,7 +1172,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 3072
+        "blerpDuration": 3072,
+        "normGain": 1.3751781543995092,
+        "normAnalyzedAt": "2026-06-02T06:13:20.449Z",
+        "normAlgoVersion": 2,
+        "normLufs": -18.571016482059225
       }
     },
     {
@@ -1136,7 +1184,7 @@
       "title": "Minecraft Villager",
       "fileUrl": "zip:audio/5f9709930e2cab000ed42948.mp3",
       "imageUrl": "zip:images/5f9709930e2cab000ed42948.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1144,10 +1192,14 @@
       "momentary": false,
       "startMs": null,
       "endMs": 1008000,
-      "hotkey": "",
+      "hotkey": "H",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 1008
+        "blerpDuration": 1008,
+        "normGain": 1.3257186885434582,
+        "normAnalyzedAt": "2026-06-02T06:13:20.592Z",
+        "normAlgoVersion": 2,
+        "normLufs": -20.10844494278816
       }
     },
     {
@@ -1155,7 +1207,7 @@
       "title": "Snoop dog",
       "fileUrl": "zip:audio/5f445fa6f6b03800059539ed.mp3",
       "imageUrl": "zip:images/5f445fa6f6b03800059539ed.png",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1166,7 +1218,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 10200
+        "blerpDuration": 10200,
+        "normGain": 0.7985701135148633,
+        "normAnalyzedAt": "2026-06-02T06:13:20.990Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.196966550999942
       }
     },
     {
@@ -1174,7 +1230,7 @@
       "title": "XP",
       "fileUrl": "zip:audio/5de882361300740005cc1be3.mp3",
       "imageUrl": "zip:images/5de882361300740005cc1be3.webp",
-      "category": "",
+      "category": "Sound Effect",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1185,7 +1241,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2016
+        "blerpDuration": 2016,
+        "normGain": 1.6270678378785755,
+        "normAnalyzedAt": "2026-06-02T06:13:21.273Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.651865748300946
       }
     },
     {
@@ -1193,7 +1253,7 @@
       "title": "Windows 10 Error",
       "fileUrl": "zip:audio/60e884364aaa54001bb25efc.mp3",
       "imageUrl": "zip:images/60e884364aaa54001bb25efc.webp",
-      "category": "",
+      "category": "Sound Effect",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1204,7 +1264,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2880
+        "blerpDuration": 2880,
+        "normGain": 1.4266850628879961,
+        "normAnalyzedAt": "2026-06-02T06:13:21.434Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.399034614562925
       }
     },
     {
@@ -1212,7 +1276,7 @@
       "title": "Oh No No No Laugh",
       "fileUrl": "zip:audio/5d016b42531c0d000622f055.mp3",
       "imageUrl": "zip:images/5d016b42531c0d000622f055.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1223,7 +1287,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 11016
+        "blerpDuration": 11016,
+        "normGain": 1.3435746536561959,
+        "normAnalyzedAt": "2026-06-02T06:13:21.644Z",
+        "normAlgoVersion": 2,
+        "normLufs": -18.732361714665284
       }
     },
     {
@@ -1231,7 +1299,7 @@
       "title": "Let's Play - Who wants to be a millionaire",
       "fileUrl": "zip:audio/5efdc7f5ff549c0005924365.mp3",
       "imageUrl": "zip:images/5efdc7f5ff549c0005924365.png",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1242,7 +1310,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 9720
+        "blerpDuration": 9720,
+        "normGain": 0.9462801695092952,
+        "normAnalyzedAt": "2026-06-02T06:13:22.054Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.737979568258115
       }
     },
     {
@@ -1250,7 +1322,7 @@
       "title": "technology is about to go crazy!",
       "fileUrl": "zip:audio/5db79de34e9a870005323353.mp3",
       "imageUrl": "zip:images/5db79de34e9a870005323353.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1261,7 +1333,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 3312
+        "blerpDuration": 3312,
+        "normGain": 1.1076780178476808,
+        "normAnalyzedAt": "2026-06-02T06:13:22.356Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.534418442145167
       }
     },
     {
@@ -1269,7 +1345,7 @@
       "title": "one more time - Daft Punk",
       "fileUrl": "zip:audio/611ecae9b1b587001cff2dfc.mp3",
       "imageUrl": "zip:images/611ecae9b1b587001cff2dfc.webp",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1280,7 +1356,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 10272
+        "blerpDuration": 10272,
+        "normGain": 0.9266394145191214,
+        "normAnalyzedAt": "2026-06-02T06:13:22.591Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.515986459150675
       }
     },
     {
@@ -1288,7 +1368,7 @@
       "title": "Pokemon battle",
       "fileUrl": "zip:audio/60d5792109b28c001aecd78b.mp3",
       "imageUrl": "zip:images/60d5792109b28c001aecd78b.webp",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1299,7 +1379,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 6864
+        "blerpDuration": 6864,
+        "normGain": 1.679478880732161,
+        "normAnalyzedAt": "2026-06-02T06:13:22.798Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.891908853124654
       }
     },
     {
@@ -1307,7 +1391,7 @@
       "title": "NFL on Fox - Theme music",
       "fileUrl": "zip:audio/6504f9436bb72aab2a33ad09.mp3",
       "imageUrl": "zip:images/6504f9436bb72aab2a33ad09.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1318,7 +1402,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 11050
+        "blerpDuration": 11050,
+        "normGain": 0.9933371114893919,
+        "normAnalyzedAt": "2026-06-02T06:13:23.189Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.156616649395755
       }
     },
     {
@@ -1326,7 +1414,7 @@
       "title": "NO GOD! PLEASE NO!!! NOOOOOOOO",
       "fileUrl": "zip:audio/603eb1548e6cea001a7c9bda.mp3",
       "imageUrl": "zip:images/603eb1548e6cea001a7c9bda.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1337,7 +1425,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 9336
+        "blerpDuration": 9336,
+        "normGain": 1.2170979743648682,
+        "normAnalyzedAt": "2026-06-02T06:13:23.562Z",
+        "normAlgoVersion": 2,
+        "normLufs": -18.738577590012074
       }
     },
     {
@@ -1345,7 +1437,7 @@
       "title": "Here we go!",
       "fileUrl": "zip:audio/5f9778b8ef336d004d82da6f.mp3",
       "imageUrl": "zip:images/5f9778b8ef336d004d82da6f.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1356,7 +1448,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 1584
+        "blerpDuration": 1584,
+        "normGain": 1.9450402238023436,
+        "normAnalyzedAt": "2026-06-02T06:13:23.919Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.778571740944216
       }
     },
     {
@@ -1364,7 +1460,7 @@
       "title": "Mario OH NOOO",
       "fileUrl": "zip:audio/5d016ea5531c0d000622fc90.mp3",
       "imageUrl": "zip:images/5d016ea5531c0d000622fc90.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1375,7 +1471,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 3120
+        "blerpDuration": 3120,
+        "normGain": 1.6354750667765905,
+        "normAnalyzedAt": "2026-06-02T06:13:24.070Z",
+        "normAlgoVersion": 2,
+        "normLufs": -18.27287855168552
       }
     },
     {
@@ -1383,7 +1483,7 @@
       "title": "OVER 9000!",
       "fileUrl": "zip:audio/60f1b5b4307823001af4407a.mp3",
       "imageUrl": "zip:images/60f1b5b4307823001af4407a.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1394,7 +1494,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2616
+        "blerpDuration": 2616,
+        "normGain": 1.1194743735689971,
+        "normAnalyzedAt": "2026-06-02T06:13:24.226Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.534345080408542
       }
     },
     {
@@ -1402,7 +1506,7 @@
       "title": "Perfect - Street Fighter II",
       "fileUrl": "zip:audio/5d39b7114d70380005a446f1.mp3",
       "imageUrl": "zip:images/5d39b7114d70380005a446f1.webp",
-      "category": "",
+      "category": "Good Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1413,7 +1517,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 864
+        "blerpDuration": 864,
+        "normGain": 1.453872935791637,
+        "normAnalyzedAt": "2026-06-02T06:13:24.368Z",
+        "normAlgoVersion": 2,
+        "normLufs": -20.0418972361562
       }
     },
     {
@@ -1421,7 +1529,7 @@
       "title": "Law and Order",
       "fileUrl": "zip:audio/5d1bda66cb2b0d0005300035.mp3",
       "imageUrl": "zip:images/5d1bda66cb2b0d0005300035.webp",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1432,7 +1540,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2064
+        "blerpDuration": 2064,
+        "normGain": 1.1795184586646978,
+        "normAnalyzedAt": "2026-06-02T06:13:24.513Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.718291911670175
       }
     },
     {
@@ -1440,7 +1552,7 @@
       "title": "We're Experiencing Technical Difficulties, pls stand by",
       "fileUrl": "zip:audio/6142f11313e4b9001bd82d4c.mp3",
       "imageUrl": "zip:images/6142f11313e4b9001bd82d4c.webp",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1451,7 +1563,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 10272
+        "blerpDuration": 10272,
+        "normGain": 0.7725869428705723,
+        "normAnalyzedAt": "2026-06-02T06:13:24.728Z",
+        "normAlgoVersion": 2,
+        "normLufs": -18.089473507109133
       }
     },
     {
@@ -1459,7 +1575,7 @@
       "title": "I will remember you",
       "fileUrl": "zip:audio/60f4769540c7bd001a4d9c02.mp3",
       "imageUrl": "zip:images/60f4769540c7bd001a4d9c02.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1470,7 +1586,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 5784
+        "blerpDuration": 5784,
+        "normGain": 1.426795876846458,
+        "normAnalyzedAt": "2026-06-02T06:13:25.093Z",
+        "normAlgoVersion": 2,
+        "normLufs": -20.604080060359
       }
     },
     {
@@ -1478,7 +1598,7 @@
       "title": "FBI OPEN UP",
       "fileUrl": "zip:audio/5b237fbafca7167a35619421.mp3",
       "imageUrl": "zip:images/5b237fbafca7167a35619421.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1489,7 +1609,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2232
+        "blerpDuration": 2232,
+        "normGain": 1.4254857260158522,
+        "normAnalyzedAt": "2026-06-02T06:13:25.247Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.71070204383007
       }
     },
     {
@@ -1497,7 +1621,7 @@
       "title": "EMOTIONAL DAMAGE",
       "fileUrl": "zip:audio/61cb43abf08c614e13399b84.mp3",
       "imageUrl": "zip:images/61cb43abf08c614e13399b84.webp",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1508,7 +1632,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2256
+        "blerpDuration": 2256,
+        "normGain": 1.6765948506887185,
+        "normAnalyzedAt": "2026-06-02T06:13:25.398Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.995220498741926
       }
     },
     {
@@ -1516,7 +1644,7 @@
       "title": "doing stuff",
       "fileUrl": "zip:audio/60c2df926ea1e70013995b48.mp3",
       "imageUrl": "zip:images/60c2df926ea1e70013995b48.png",
-      "category": "",
+      "category": "Stinger",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1527,7 +1655,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 4080
+        "blerpDuration": 4080,
+        "normGain": 1.2969785008840828,
+        "normAnalyzedAt": "2026-06-02T06:13:25.719Z",
+        "normAlgoVersion": 2,
+        "normLufs": -18.962318096821452
       }
     },
     {
@@ -1535,7 +1667,7 @@
       "title": "thinking long time",
       "fileUrl": "zip:audio/603d5b8c289ea8001a1f4f7e.mp3",
       "imageUrl": "zip:images/603d5b8c289ea8001a1f4f7e.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1546,7 +1678,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 3480
+        "blerpDuration": 3480,
+        "normGain": 0.8047142597659532,
+        "normAnalyzedAt": "2026-06-02T06:13:26.016Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.118312902470016
       }
     },
     {
@@ -1554,7 +1690,7 @@
       "title": "Bye",
       "fileUrl": "zip:audio/5dbe386d0ec05b0005781c03.mp3",
       "imageUrl": "zip:images/5dbe386d0ec05b0005781c03.webp",
-      "category": "",
+      "category": "Sound Effect",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1565,7 +1701,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2664
+        "blerpDuration": 2664,
+        "normGain": 1.0950726120755678,
+        "normAnalyzedAt": "2026-06-02T06:13:26.303Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.393191444224716
       }
     },
     {
@@ -1584,7 +1724,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 1704
+        "blerpDuration": 1704,
+        "normGain": 1.1707002705019598,
+        "normAnalyzedAt": "2026-06-02T06:13:26.580Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.800222769109208
       }
     },
     {
@@ -1603,7 +1747,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 6072
+        "blerpDuration": 6072,
+        "normGain": 1.262361151655085,
+        "normAnalyzedAt": "2026-06-02T06:13:26.944Z",
+        "normAlgoVersion": 2,
+        "normLufs": -20.058431418459318
       }
     },
     {
@@ -1622,7 +1770,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2616
+        "blerpDuration": 2616,
+        "normGain": 1.2389477712238441,
+        "normAnalyzedAt": "2026-06-02T06:13:27.232Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.677353367406273
       }
     },
     {
@@ -1630,7 +1782,7 @@
       "title": "we'll be right back",
       "fileUrl": "zip:audio/6071525836a4fd001b4e34fc.mp3",
       "imageUrl": "zip:images/6071525836a4fd001b4e34fc.webp",
-      "category": "",
+      "category": "Music",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1641,7 +1793,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 5760
+        "blerpDuration": 5760,
+        "normGain": 1.2517055687600505,
+        "normAnalyzedAt": "2026-06-02T06:13:27.413Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.06570964105831
       }
     },
     {
@@ -1649,7 +1805,7 @@
       "title": "One eternity later",
       "fileUrl": "zip:audio/60f475e740c7bd001a4d8bd1.mp3",
       "imageUrl": "zip:images/60f475e740c7bd001a4d8bd1.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1660,7 +1816,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2280
+        "blerpDuration": 2280,
+        "normGain": 1.0087604243091148,
+        "normAnalyzedAt": "2026-06-02T06:13:27.711Z",
+        "normAlgoVersion": 2,
+        "normLufs": -21.218311895196884
       }
     },
     {
@@ -1668,7 +1828,7 @@
       "title": "2000 years later",
       "fileUrl": "zip:audio/609e228a5dd78d001b4f6c3d.mp3",
       "imageUrl": "zip:images/609e228a5dd78d001b4f6c3d.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1679,7 +1839,11 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 2976
+        "blerpDuration": 2976,
+        "normGain": 0.8827964698833495,
+        "normAnalyzedAt": "2026-06-02T06:13:28.003Z",
+        "normAlgoVersion": 2,
+        "normLufs": -20.92569549760252
       }
     },
     {
@@ -1687,7 +1851,7 @@
       "title": "lose price is right sound",
       "fileUrl": "zip:audio/5f5838a07a99b10006358009.mp3",
       "imageUrl": "zip:images/5f5838a07a99b10006358009.png",
-      "category": "",
+      "category": "Bad Thing",
       "tags": [],
       "volume": 1,
       "playbackRate": 1,
@@ -1698,12 +1862,73 @@
       "hotkey": "",
       "color": "#4a9eff",
       "extra": {
-        "blerpDuration": 5808
+        "blerpDuration": 5808,
+        "normGain": 1.646050491818188,
+        "normAnalyzedAt": "2026-06-02T06:13:28.364Z",
+        "normAlgoVersion": 2,
+        "normLufs": -19.736327198611818
       }
     }
   ],
   "quickAccess": {
-    "favourites": [],
-    "recents": []
+    "favourites": [
+      "65d0d92f658e54b628f3f0a6",
+      "65c6a8ca1cb463cfb280e6ed",
+      "65fdfc8f35fab459ef38308a",
+      "5d9c18fe73232d0005915149",
+      "601052745f8c48001599d241",
+      "616e59c3be67de001b784166",
+      "60d36e98f7d521001ab7551f",
+      "6194af2aab435c001490786a",
+      "60426db4d6890d001498865d",
+      "65f542d053a1c61b05074e88",
+      "65c249d7492bbaf8a7c691dd",
+      "6227c0524c71e7548cea02c1",
+      "5d016f37531c0d000622fde9",
+      "5d55dfcc5757cb00059231ec",
+      "5d016bae531c0d000622f1ae",
+      "5d013982531c0d0006223e3f",
+      "63322c282d5621137373f075",
+      "5dbe32f40ec05b000578052c",
+      "627925fcf41c4ca1c86d72bb",
+      "601786c0d329850013fc90fa",
+      "5d590b225757cb0005a6ec8e",
+      "5f973c5faefc84000dbd5939",
+      "5d017e59531c0d00062326e0",
+      "5ff6747295c137001be3455c",
+      "5dbe322d0ec05b000578028f",
+      "5e018eda1300740005043c1e",
+      "5fa82320434c58000fe29c20",
+      "5cf7e11d2d9781000518fbc6",
+      "5f9709930e2cab000ed42948",
+      "603eb1548e6cea001a7c9bda",
+      "5f9778b8ef336d004d82da6f",
+      "5d016ea5531c0d000622fc90",
+      "60f4769540c7bd001a4d9c02",
+      "609e228a5dd78d001b4f6c3d",
+      "5f5838a07a99b10006358009"
+    ],
+    "recents": [
+      "62142c127211e6695492f13a",
+      "5d9c18fe73232d0005915149",
+      "5d013982531c0d0006223e3f",
+      "65c6a8ca1cb463cfb280e6ed",
+      "63322c282d5621137373f075",
+      "60426db4d6890d001498865d",
+      "62febbddc26cc15a295a2592",
+      "627925fcf41c4ca1c86d72bb",
+      "65f542d053a1c61b05074e88",
+      "6227c0524c71e7548cea02c1",
+      "6494c959a7978a0b766e64f7",
+      "6194af2aab435c001490786a",
+      "601052745f8c48001599d241",
+      "65fdfc8f35fab459ef38308a",
+      "65d0d92f658e54b628f3f0a6",
+      "5f9709930e2cab000ed42948",
+      "5d016f37531c0d000622fde9",
+      "65c249d7492bbaf8a7c691dd",
+      "603d5b8c289ea8001a1f4f7e",
+      "67a29c1a562d131ba6154de6"
+    ]
   }
 }

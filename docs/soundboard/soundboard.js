@@ -81,6 +81,48 @@
     return base + (base.endsWith('/') ? '' : '/') + 'boards/from-blerp-portable/board.json';
   }
 
+  // Bump when updating docs/soundboard/boards/from-blerp-portable/ so visitors reload the new default.
+  const BUNDLED_DEFAULT_VERSION_KEY = 'soundboard-bundled-default-version';
+  const BUNDLED_DEFAULT_VERSION = 'from-blerp-portable-v3';
+
+  function rewritePortableZipUrls(board, boardJsonUrl) {
+    if (!board || !Array.isArray(board.sounds)) return board;
+    const boardBase = boardJsonUrl.replace(/\/[^/]*$/, '/');
+    for (const s of board.sounds) {
+      if (s && typeof s.fileUrl === 'string' && s.fileUrl.startsWith('zip:')) {
+        s.fileUrl = boardBase + s.fileUrl.slice('zip:'.length);
+      }
+      if (s && typeof s.imageUrl === 'string' && s.imageUrl.startsWith('zip:')) {
+        s.imageUrl = boardBase + s.imageUrl.slice('zip:'.length);
+      }
+    }
+    return board;
+  }
+
+  function fetchBundledDefaultBoard() {
+    const url = getBoardJsonPath();
+    return fetch(url, { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('Failed to load board'))))
+      .then((data) => {
+        rewritePortableZipUrls(data, url);
+        const result = Board.validateBoard(data);
+        if (!result.ok) throw new Error(result.error);
+        return Board.normalizeBoard(data);
+      });
+  }
+
+  function markBundledDefaultLoaded() {
+    try { localStorage.setItem(BUNDLED_DEFAULT_VERSION_KEY, BUNDLED_DEFAULT_VERSION); } catch (_) {}
+  }
+
+  function hasCurrentBundledDefault() {
+    try {
+      return localStorage.getItem(BUNDLED_DEFAULT_VERSION_KEY) === BUNDLED_DEFAULT_VERSION;
+    } catch (_) {
+      return false;
+    }
+  }
+
   const CATEGORY_UI_KEY_PREFIX = 'soundboard-category-state:';
   const CATEGORY_ORDER_KEY_PREFIX = 'soundboard-category-order:';
   const AUTO_LEVEL_KEY = 'soundboard-auto-level';
@@ -1715,34 +1757,41 @@
   }
 
   function loadFromStorageOrSample() {
-    // Prefer the freshest of localStorage and IndexedDB (compares updatedAt).
-    // Falls through to sample board only when both stores are empty/invalid.
     const latestPromise = Storage && Storage.loadBoardLatest
       ? Storage.loadBoardLatest()
       : Promise.resolve(Storage && Storage.loadBoard ? Storage.loadBoard() : null);
 
     latestPromise.then((saved) => {
-      if (saved && Board.validateBoard(saved).ok) {
+      const hasValidSave = saved && Board.validateBoard(saved).ok;
+      if (hasValidSave && hasCurrentBundledDefault()) {
         const soundCount = Array.isArray(saved.sounds) ? saved.sounds.length : 0;
         console.info('[soundboard] load: restored saved board (' + soundCount + ' sounds, updatedAt=' + (saved.updatedAt || 'n/a') + ')');
-        if (downloadStatus) {
-          downloadStatus.textContent = 'Loaded saved board (' + soundCount + ' sound' + (soundCount === 1 ? '' : 's') + ').';
-          setTimeout(function () {
-            if (downloadStatus && downloadStatus.textContent && downloadStatus.textContent.startsWith('Loaded saved board')) {
-              downloadStatus.textContent = '';
-            }
-          }, 3000);
-        }
         setBoard(Board.normalizeBoard(saved));
         return;
       }
-      if (saved) {
-        const validation = Board.validateBoard(saved);
-        console.warn('[soundboard] load: saved board failed validation', validation && validation.error);
+      if (hasValidSave) {
+        console.info('[soundboard] load: loading bundled default (From Blerp portable); saved board kept as fallback only.');
       } else {
-        console.info('[soundboard] load: no saved board found in localStorage or IndexedDB; loading sample.');
+        console.info('[soundboard] load: loading bundled default (From Blerp portable).');
       }
-      loadSampleBoardOrEmpty();
+      fetchBundledDefaultBoard()
+        .then((board) => {
+          markBundledDefaultLoaded();
+          setBoard(board);
+          if (Storage && Storage.saveBoard) {
+            Storage.saveBoard(board).catch((err) => {
+              console.warn('[soundboard] load: could not persist bundled default', err);
+            });
+          }
+        })
+        .catch((err) => {
+          console.warn('[soundboard] load: bundled default failed', err);
+          if (hasValidSave) {
+            setBoard(Board.normalizeBoard(saved));
+            return;
+          }
+          loadSampleBoardOrEmpty();
+        });
     }).catch((err) => {
       console.warn('[soundboard] load: loadBoardLatest failed', err);
       loadSampleBoardOrEmpty();
@@ -1750,26 +1799,10 @@
   }
 
   function loadSampleBoardOrEmpty() {
-    const url = getBoardJsonPath();
-    fetch(url)
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('Failed to load board'))))
-      .then((data) => {
-        // Portable ZIP exports use `zip:` URLs like `zip:audio/foo.mp3`.
-        // When we ship the extracted ZIP as static files, rewrite those URLs to real relative paths.
-        const boardBase = url.replace(/\/[^/]*$/, '/');
-        if (data && Array.isArray(data.sounds)) {
-          for (const s of data.sounds) {
-            if (s && typeof s.fileUrl === 'string' && s.fileUrl.startsWith('zip:')) {
-              s.fileUrl = boardBase + s.fileUrl.slice('zip:'.length);
-            }
-            if (s && typeof s.imageUrl === 'string' && s.imageUrl.startsWith('zip:')) {
-              s.imageUrl = boardBase + s.imageUrl.slice('zip:'.length);
-            }
-          }
-        }
-        const result = Board.validateBoard(data);
-        if (!result.ok) throw new Error(result.error);
-        setBoard(Board.normalizeBoard(data));
+    fetchBundledDefaultBoard()
+      .then((board) => {
+        markBundledDefaultLoaded();
+        setBoard(board);
       })
       .catch((err) => {
         console.warn('soundboard: load board failed', err);
@@ -3767,6 +3800,7 @@
     } catch (_) {}
     try {
       localStorage.removeItem('soundboard-board');
+      localStorage.removeItem(BUNDLED_DEFAULT_VERSION_KEY);
       const keysToDelete = [];
       for (let i = 0; i < localStorage.length; i += 1) {
         const k = localStorage.key(i);
@@ -3785,13 +3819,11 @@
     } catch (_) {}
     clearLocalAudioDatabase().finally(function () {
       if (Audio && Audio.clearCache) Audio.clearCache();
-      const url = getBoardJsonPath();
-      fetch(url, { cache: 'no-store' })
-        .then((r) => (r.ok ? r.json() : Promise.reject(new Error('Failed to load board'))))
-        .then((data) => {
-          const result = Board.validateBoard(data);
-          if (!result.ok) throw new Error(result.error);
-          setBoard(Board.normalizeBoard(data));
+      fetchBundledDefaultBoard()
+        .then((board) => {
+          markBundledDefaultLoaded();
+          setBoard(board);
+          if (Storage && Storage.saveBoard) Storage.saveBoard(board).catch(() => {});
         })
         .catch(() => {
           loadInitialBoard();
