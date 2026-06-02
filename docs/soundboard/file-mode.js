@@ -12,72 +12,73 @@
  * that report unsupported = true.
  */
 
-const FILE_HANDLE_DB = 'soundboard-file-mode';
-const STORE_NAME = 'handles';
-const HANDLE_KEY = 'attached';
-let dbPromise = null;
+(() => {
+  const FILE_HANDLE_DB = 'soundboard-file-mode';
+  const STORE_NAME = 'handles';
+  const HANDLE_KEY = 'attached';
+  let dbPromise = null;
 
-function isSupported() {
-  return typeof window !== 'undefined'
-    && typeof window.showOpenFilePicker === 'function'
-    && typeof window.showSaveFilePicker === 'function';
-}
+  function isSupported() {
+    return typeof window !== 'undefined'
+      && typeof window.showOpenFilePicker === 'function'
+      && typeof window.showSaveFilePicker === 'function';
+  }
 
-function openDb() {
-  if (dbPromise) return dbPromise;
-  dbPromise = new Promise((resolve, reject) => {
-    if (!window || !window.indexedDB) return reject(new Error('IndexedDB not available'));
-    const req = indexedDB.open(FILE_HANDLE_DB, 1);
-    req.onerror = () => reject(req.error);
-    req.onsuccess = () => resolve(req.result);
-    req.onupgradeneeded = (e) => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME);
-      }
-    };
-  });
-  return dbPromise;
-}
-
-function putHandle(handle) {
-  return openDb().then((db) => {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      store.put(handle, HANDLE_KEY);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
-  });
-}
-
-function getHandle() {
-  return openDb().then((db) => {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const store = tx.objectStore(STORE_NAME);
-      const req = store.get(HANDLE_KEY);
-      req.onsuccess = () => resolve(req.result || null);
+  function openDb() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+      if (!window || !window.indexedDB) return reject(new Error('IndexedDB not available'));
+      const req = indexedDB.open(FILE_HANDLE_DB, 1);
       req.onerror = () => reject(req.error);
+      req.onsuccess = () => resolve(req.result);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME);
+        }
+      };
     });
-  }).catch((e) => {
-    console.warn('file-mode: getHandle failed', e);
-    return null;
-  });
-}
+    return dbPromise;
+  }
 
-function clearHandle() {
-  return openDb().then((db) => {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      store.delete(HANDLE_KEY);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
+  function putHandle(handle) {
+    return openDb().then((db) => {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        store.put(handle, HANDLE_KEY);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
     });
-  }).catch((e) => { console.warn('file-mode: clearHandle failed', e); });
-}
+  }
+
+  function getHandle() {
+    return openDb().then((db) => {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.get(HANDLE_KEY);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+      });
+    }).catch((e) => {
+      console.warn('file-mode: getHandle failed', e);
+      return null;
+    });
+  }
+
+  function clearHandle() {
+    return openDb().then((db) => {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        store.delete(HANDLE_KEY);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }).catch((e) => { console.warn('file-mode: clearHandle failed', e); });
+  }
 
 /**
  * Request read/write permission on a handle. Returns 'granted', 'denied',
@@ -220,12 +221,13 @@ async function detach() {
   await clearHandle();
 }
 
-window.SoundboardFileMode = {
-  isSupported,
-  pickAndAttach,
-  saveAndAttach,
-  readAttachedFile,
-  writeAttachedFile,
-  getAttachmentInfo,
-  detach
-};
+  window.SoundboardFileMode = {
+    isSupported,
+    pickAndAttach,
+    saveAndAttach,
+    readAttachedFile,
+    writeAttachedFile,
+    getAttachmentInfo,
+    detach
+  };
+})();

@@ -1670,7 +1670,8 @@
     } else {
       const blob = await buildPortableZipBlob();
       if (!blob) { alert('Nothing to save yet.'); return; }
-      const suggested = (currentBoard && currentBoard.name ? currentBoard.name : 'soundboard') + '-portable.zip';
+      const base = safeFilenamePart((currentBoard && currentBoard.name ? currentBoard.name : 'soundboard'));
+      const suggested = base + '-portable-' + timestampForFilename() + '.zip';
       const res = await window.SoundboardFileMode.saveAndAttach(blob, suggested);
       if (!res.ok) {
         if (res.reason !== 'cancelled') alert('Could not save file (' + res.reason + ').');
@@ -3057,7 +3058,8 @@
     syncQuickAccessToBoard();
     const json = JSON.stringify(Board.normalizeBoard(currentBoard), null, 2);
     const blob = new Blob([json], { type: 'application/json' });
-    const name = (currentBoard.name || 'board').replace(/[^a-z0-9-_]/gi, '-') + '.json';
+    const base = safeFilenamePart(currentBoard.name || 'board');
+    const name = base + '-' + timestampForFilename() + '.json';
     shareOrDownloadBlob(blob, name, 'application/json');
   }
 
@@ -3081,6 +3083,17 @@
       .replace(/[^a-z0-9-_\.]/gi, '-')
       .replace(/-+/g, '-')
       .slice(0, 80) || 'file';
+  }
+
+  function timestampForFilename(d = new Date()) {
+    const pad2 = (n) => String(n).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    const mm = pad2(d.getMonth() + 1);
+    const dd = pad2(d.getDate());
+    const hh = pad2(d.getHours());
+    const mi = pad2(d.getMinutes());
+    const ss = pad2(d.getSeconds());
+    return `${yyyy}${mm}${dd}-${hh}${mi}${ss}`;
   }
 
   function arrayBufferToBase64(buf) {
@@ -3242,7 +3255,8 @@
     }, null, 2));
 
     const out = await zip.generateAsync({ type: 'blob' });
-    const name = safeFilenamePart(portable.name || 'board') + '-portable.zip';
+    const base = safeFilenamePart(portable.name || 'board');
+    const name = base + '-portable-' + timestampForFilename() + '.zip';
     await shareOrDownloadBlob(out, name, 'application/zip');
 
     if (downloadStatus) downloadStatus.textContent = warnings.length ? ('Portable ZIP exported (with ' + warnings.length + ' warnings).') : 'Portable ZIP exported.';
