@@ -86,7 +86,11 @@
   // Bump when updating docs/soundboard/boards/from-blerp-portable/ so visitors reload the new default.
   const BUNDLED_DEFAULT_VERSION_KEY = 'soundboard-bundled-default-version';
   const BUNDLED_DEFAULT_VERSION = 'from-blerp-portable-v3';
-  const APP_BUILD = '20260623-1';
+  const APP_BUILD = '20260623-2';
+
+  function getBundledBoardBase() {
+    return getBoardJsonPath().replace(/\/[^/]*$/, '/');
+  }
 
   function rewritePortableZipUrls(board, boardJsonUrl) {
     if (!board || !Array.isArray(board.sounds)) return board;
@@ -99,6 +103,33 @@
         s.imageUrl = boardBase + s.imageUrl.slice('zip:'.length);
       }
     }
+    return board;
+  }
+
+  /** Resolve zip:, relative, or http URLs for fetch/download. */
+  function resolveMediaFetchUrl(url) {
+    const u = String(url || '').trim();
+    if (!u || u.startsWith('local:') || u.startsWith('data:') || u.startsWith('blob:') || u.startsWith('local-image:')) {
+      return '';
+    }
+    if (u.startsWith('zip:')) {
+      return getBundledBoardBase() + u.slice('zip:'.length);
+    }
+    if (/^https?:/i.test(u)) return u;
+    if (u.startsWith('/')) return u;
+    const pageBase = window.location.pathname.replace(/\/[^/]*$/, '') || '';
+    const prefix = pageBase.endsWith('/') ? pageBase : pageBase + '/';
+    return prefix + u.replace(/^\.\//, '');
+  }
+
+  function ensureBoardMediaUrlsResolved(board) {
+    if (!board || !Array.isArray(board.sounds)) return board;
+    const needsRewrite = board.sounds.some(function (s) {
+      const fu = s && s.fileUrl ? String(s.fileUrl) : '';
+      const iu = s && s.imageUrl ? String(s.imageUrl) : '';
+      return fu.startsWith('zip:') || iu.startsWith('zip:');
+    });
+    if (needsRewrite) rewritePortableZipUrls(board, getBoardJsonPath());
     return board;
   }
 
@@ -1936,6 +1967,7 @@
   }
 
   function setBoard(board) {
+    ensureBoardMediaUrlsResolved(board);
     currentBoard = board;
     if (boardNameEl) {
       boardNameEl.textContent = board.name || t('board.defaultName');
@@ -3599,172 +3631,219 @@
       if (downloadStatus) downloadStatus.textContent = 'Local storage not available.';
       return;
     }
-    var pendingAudio = currentBoard.sounds.filter(function (s) {
-      return s && s.fileUrl && s.fileUrl.trim() && !String(s.fileUrl).startsWith('local:');
-    });
-    var pendingImages = currentBoard.sounds.filter(function (s) {
+    ensureBoardMediaUrlsResolved(currentBoard);
+
+    const btn = toolbarEl && toolbarEl.querySelector('[data-action="download-sounds"]');
+    if (btn) btn.disabled = true;
+    if (downloadStatus) downloadStatus.textContent = 'Checking media…';
+
+    function soundNeedsAudioDownload(s) {
+      if (!s || !s.fileUrl) return Promise.resolve(false);
+      const fu = String(s.fileUrl).trim();
+      if (!fu) return Promise.resolve(false);
+      if (!fu.startsWith('local:')) return Promise.resolve(true);
+      return LocalAudio.getBlob(fu.slice(6)).then(function (buf) { return !buf; }).catch(function () { return true; });
+    }
+
+    function soundNeedsImageDownload(s) {
       const url = s && s.imageUrl ? String(s.imageUrl).trim() : '';
       if (!url) return false;
       if (url.startsWith('data:')) return false;
-      if (url.startsWith('zip:')) return false;
+      if (url.startsWith('local-image:')) return false;
       return true;
-    });
-    if (pendingAudio.length === 0 && pendingImages.length === 0) {
-      if (downloadStatus) downloadStatus.textContent = 'All media already saved locally.';
-      setTimeout(function () { if (downloadStatus) downloadStatus.textContent = ''; }, 2500);
-      return;
     }
-    const btn = toolbarEl && toolbarEl.querySelector('[data-action="download-sounds"]');
-    if (btn) btn.disabled = true;
-    const total = pendingAudio.length + pendingImages.length;
-    const results = [];
-    const imgResults = [];
-    const warnings = [];
 
-    function fetchAudio(index) {
-      if (index >= pendingAudio.length) {
-        fetchImage(0);
+    Promise.all(currentBoard.sounds.map(function (s) {
+      return soundNeedsAudioDownload(s).then(function (needs) { return needs ? s : null; });
+    })).then(function (audioList) {
+      const pendingAudio = audioList.filter(Boolean);
+      const pendingImages = currentBoard.sounds.filter(soundNeedsImageDownload);
+
+      if (pendingAudio.length === 0 && pendingImages.length === 0) {
+        if (downloadStatus) downloadStatus.textContent = 'All media already saved locally.';
+        if (btn) btn.disabled = false;
+        setTimeout(function () { if (downloadStatus) downloadStatus.textContent = ''; }, 2500);
         return;
       }
-      const s = pendingAudio[index];
-      const filename = (s.title || s.id || 'sound-' + (index + 1)).replace(/[^a-z0-9-_\.]/gi, '-').slice(0, 80) + '.mp3';
-      const stepN = index + 1;
-      if (downloadStatus) downloadStatus.textContent = 'Downloading audio ' + stepN + '/' + total + '…';
-      fetch(s.fileUrl, { mode: 'cors' })
-        .then(function (r) { return r.ok ? r.arrayBuffer() : Promise.reject(new Error(r.statusText)); })
-        .then(function (arrayBuffer) {
-          results.push({ sound: s, arrayBuffer: arrayBuffer, filename: filename });
-          fetchAudio(index + 1);
-        })
-        .catch(function (err) {
-          warnings.push('Audio download failed for ' + (s.title || s.id) + ': ' + (err.message || 'fetch'));
-          fetchAudio(index + 1);
-        });
-    }
 
-    function fetchImage(index) {
-      if (index >= pendingImages.length) {
-        applyLocalAndSave(results, imgResults);
-        return;
+      const total = pendingAudio.length + pendingImages.length;
+      const results = [];
+      const imgResults = [];
+      const warnings = [];
+
+      function fetchAudioBytes(s) {
+        const resolved = resolveMediaFetchUrl(s.fileUrl);
+        if (!resolved) return Promise.reject(new Error('unsupported audio URL'));
+        return fetch(resolved).then(function (r) {
+          if (!r.ok) throw new Error(r.statusText || 'HTTP ' + r.status);
+          return r.arrayBuffer();
+        });
       }
-      const s = pendingImages[index];
-      const url = String(s.imageUrl || '').trim();
-      const stepN = pendingAudio.length + index + 1;
-      if (downloadStatus) downloadStatus.textContent = 'Downloading images ' + stepN + '/' + total + '…';
-      fetch(url, { mode: 'cors' })
-        .then(function (r) { return r.ok ? Promise.all([r.arrayBuffer(), r.headers ? r.headers.get('content-type') : '']) : Promise.reject(new Error(r.statusText)); })
-        .then(function (pair) {
-          imgResults.push({ sound: s, arrayBuffer: pair[0], contentType: pair[1] || '' });
-          fetchImage(index + 1);
-        })
-        .catch(function (err) {
-          warnings.push('Image download failed for ' + (s.title || s.id) + ': ' + (err.message || 'fetch'));
-          fetchImage(index + 1);
-        });
-    }
 
-    function applyLocalAndSave(results, imgResults) {
-      if (downloadStatus) downloadStatus.textContent = 'Saving into board…';
-      const LocalAudio = window.SoundboardLocalAudio;
-      const LocalImages = window.SoundboardLocalImages;
-      let saved = 0;
-      function storeNext() {
-        if (saved >= results.length) {
-          results.forEach(function (r) {
-            r.sound.fileUrl = 'local:downloaded-' + r.sound.id;
-          });
-          // Store downloaded images in IDB (local-image:) so they don't bloat the
-          // board JSON and trip the localStorage quota.
-          const imageStores = imgResults.map(function (r) {
-            const ct = r.contentType || guessMimeFromPath(r.sound.imageUrl || '', 'image/jpeg');
-            if (LocalImages && LocalImages.putBlob) {
-              const newId = LocalImages.generateId();
-              return LocalImages.putBlob(newId, r.arrayBuffer, ct)
-                .then(function () {
-                  r.sound.imageUrl = 'local-image:' + newId;
-                  return LocalImages.getObjectUrl(newId).then(function (objUrl) {
-                    if (objUrl) resolvedImageUrls.set(newId, objUrl);
-                  });
-                })
-                .catch(function (e) {
-                  console.warn('soundboard: image intern failed; falling back to data URL', e);
-                  const b64 = arrayBufferToBase64(r.arrayBuffer);
-                  r.sound.imageUrl = 'data:' + ct + ';base64,' + b64;
-                });
-            }
-            const b64 = arrayBufferToBase64(r.arrayBuffer);
-            r.sound.imageUrl = 'data:' + ct + ';base64,' + b64;
-            return Promise.resolve();
-          });
-          Promise.all(imageStores).then(function () {
-            currentBoard.updatedAt = new Date().toISOString();
-            saveToStorageNow();
-            if (Audio && Audio.clearCache) Audio.clearCache();
-            render();
-            if (warnings.length) {
-              openPortableReport('Download media warnings', 'Some audio/images could not be downloaded (CORS/URL errors).', warnings);
-            }
-            saveFilesToDirectory(results);
-          });
+      function fetchAudio(index) {
+        if (index >= pendingAudio.length) {
+          fetchImage(0);
           return;
         }
-        const r = results[saved];
-        LocalAudio.putBlob('downloaded-' + r.sound.id, r.arrayBuffer).then(function () {
-          saved++;
-          storeNext();
-        }).catch(function () {
-          if (downloadStatus) downloadStatus.textContent = 'Error saving to storage.';
-          if (btn) btn.disabled = false;
-        });
-      }
-      storeNext();
-    }
-
-    function saveFilesToDirectory(results) {
-      function done(msg) {
-        if (downloadStatus) downloadStatus.textContent = msg;
-        if (btn) btn.disabled = false;
-        setTimeout(function () { if (downloadStatus) downloadStatus.textContent = ''; }, 3000);
-      }
-      if (typeof window.showDirectoryPicker === 'function') {
-        if (downloadStatus) downloadStatus.textContent = 'Choose a folder to save files…';
-        window.showDirectoryPicker()
-          .then(function (dir) {
-            if (downloadStatus) downloadStatus.textContent = 'Saving files…';
-            var written = 0;
-            function writeNext() {
-              if (written >= results.length) {
-                return dir.getFileHandle((currentBoard.name || 'board').replace(/[^a-z0-9-_]/gi, '-') + '.json', { create: true })
-                  .then(function (fh) { return fh.createWritable(); })
-                  .then(function (w) {
-                    w.write(JSON.stringify(Board.normalizeBoard(currentBoard), null, 2));
-                    return w.close();
-                  });
-              }
-              var r = results[written];
-              return dir.getFileHandle(r.filename, { create: true })
-                .then(function (fh) { return fh.createWritable(); })
-                .then(function (w) {
-                  w.write(r.arrayBuffer);
-                  return w.close();
-                })
-                .then(function () { written++; return writeNext(); });
-            }
-            return writeNext();
-          })
-          .then(function () {
-            done('Saved to folder. Board updated with local sounds.');
+        const s = pendingAudio[index];
+        const filename = (s.title || s.id || 'sound-' + (index + 1)).replace(/[^a-z0-9-_\.]/gi, '-').slice(0, 80) + '.mp3';
+        const stepN = index + 1;
+        if (downloadStatus) downloadStatus.textContent = 'Downloading audio ' + stepN + '/' + total + '…';
+        fetchAudioBytes(s)
+          .then(function (arrayBuffer) {
+            results.push({ sound: s, arrayBuffer: arrayBuffer, filename: filename });
+            fetchAudio(index + 1);
           })
           .catch(function (err) {
-            if (err.name === 'AbortError') done('Board updated with local sounds.');
-            else done('Saved to board. Folder save failed.');
+            warnings.push('Audio download failed for ' + (s.title || s.id) + ': ' + (err.message || 'fetch'));
+            fetchAudio(index + 1);
           });
-      } else {
-        done('All sounds saved into the board. (Use a modern browser to save to a folder.)');
       }
-    }
 
-    fetchAudio(0);
+      function fetchImage(index) {
+        if (index >= pendingImages.length) {
+          applyLocalAndSave(results, imgResults);
+          return;
+        }
+        const s = pendingImages[index];
+        const url = resolveMediaFetchUrl(s.imageUrl);
+        const stepN = pendingAudio.length + index + 1;
+        if (!url) {
+          warnings.push('Image URL not fetchable for ' + (s.title || s.id));
+          fetchImage(index + 1);
+          return;
+        }
+        if (downloadStatus) downloadStatus.textContent = 'Downloading images ' + stepN + '/' + total + '…';
+        fetch(url)
+          .then(function (r) { return r.ok ? Promise.all([r.arrayBuffer(), r.headers ? r.headers.get('content-type') : '']) : Promise.reject(new Error(r.statusText || 'fetch failed')); })
+          .then(function (pair) {
+            imgResults.push({ sound: s, arrayBuffer: pair[0], contentType: pair[1] || '' });
+            fetchImage(index + 1);
+          })
+          .catch(function (err) {
+            warnings.push('Image download failed for ' + (s.title || s.id) + ': ' + (err.message || 'fetch'));
+            fetchImage(index + 1);
+          });
+      }
+
+      function applyLocalAndSave(results, imgResults) {
+        if (results.length === 0 && imgResults.length === 0) {
+          if (btn) btn.disabled = false;
+          if (warnings.length) {
+            openPortableReport('Download media failed', 'No audio or images could be downloaded. Common causes: zip: paths not on this site, CORS blocks, or broken URLs.', warnings);
+          }
+          if (downloadStatus) downloadStatus.textContent = 'Download failed — no media could be fetched.';
+          setTimeout(function () { if (downloadStatus) downloadStatus.textContent = ''; }, 4500);
+          return;
+        }
+        if (downloadStatus) downloadStatus.textContent = 'Saving into board…';
+        const LocalImages = window.SoundboardLocalImages;
+        let saved = 0;
+        let saveErrors = 0;
+
+        function storeNext() {
+          if (saved >= results.length) {
+            results.forEach(function (r) {
+              r.sound.fileUrl = 'local:downloaded-' + r.sound.id;
+            });
+            const imageStores = imgResults.map(function (r) {
+              const ct = r.contentType || guessMimeFromPath(r.sound.imageUrl || '', 'image/jpeg');
+              if (LocalImages && LocalImages.putBlob) {
+                const newId = LocalImages.generateId();
+                return LocalImages.putBlob(newId, r.arrayBuffer, ct)
+                  .then(function () {
+                    r.sound.imageUrl = 'local-image:' + newId;
+                    return LocalImages.getObjectUrl(newId).then(function (objUrl) {
+                      if (objUrl) resolvedImageUrls.set(newId, objUrl);
+                    });
+                  })
+                  .catch(function (e) {
+                    console.warn('soundboard: image intern failed; falling back to data URL', e);
+                    const b64 = arrayBufferToBase64(r.arrayBuffer);
+                    r.sound.imageUrl = 'data:' + ct + ';base64,' + b64;
+                  });
+              }
+              const b64 = arrayBufferToBase64(r.arrayBuffer);
+              r.sound.imageUrl = 'data:' + ct + ';base64,' + b64;
+              return Promise.resolve();
+            });
+            Promise.all(imageStores).then(function () {
+              currentBoard.updatedAt = new Date().toISOString();
+              saveToStorageNow();
+              if (Audio && Audio.clearCache) Audio.clearCache();
+              render();
+              if (warnings.length || saveErrors > 0) {
+                const extra = saveErrors > 0 ? (saveErrors + ' file(s) could not be saved to browser storage.') : '';
+                openPortableReport('Download media warnings', 'Some audio/images had problems.' + (extra ? ' ' + extra : ''), warnings);
+              }
+              saveFilesToDirectory(results);
+            });
+            return;
+          }
+          const r = results[saved];
+          LocalAudio.putBlob('downloaded-' + r.sound.id, r.arrayBuffer).then(function () {
+            saved++;
+            storeNext();
+          }).catch(function (err) {
+            saveErrors++;
+            warnings.push('Storage save failed for ' + (r.sound.title || r.sound.id) + ': ' + (err && err.message ? err.message : 'quota or storage error'));
+            saved++;
+            storeNext();
+          });
+        }
+        storeNext();
+      }
+
+      function saveFilesToDirectory(results) {
+        function done(msg) {
+          if (downloadStatus) downloadStatus.textContent = msg;
+          if (btn) btn.disabled = false;
+          setTimeout(function () { if (downloadStatus) downloadStatus.textContent = ''; }, 3000);
+        }
+        if (typeof window.showDirectoryPicker === 'function' && results.length > 0) {
+          if (downloadStatus) downloadStatus.textContent = 'Choose a folder to save files…';
+          window.showDirectoryPicker()
+            .then(function (dir) {
+              if (downloadStatus) downloadStatus.textContent = 'Saving files…';
+              var written = 0;
+              function writeNext() {
+                if (written >= results.length) {
+                  return dir.getFileHandle((currentBoard.name || 'board').replace(/[^a-z0-9-_]/gi, '-') + '.json', { create: true })
+                    .then(function (fh) { return fh.createWritable(); })
+                    .then(function (w) {
+                      w.write(JSON.stringify(Board.normalizeBoard(currentBoard), null, 2));
+                      return w.close();
+                    });
+                }
+                var r = results[written];
+                return dir.getFileHandle(r.filename, { create: true })
+                  .then(function (fh) { return fh.createWritable(); })
+                  .then(function (w) {
+                    w.write(r.arrayBuffer);
+                    return w.close();
+                  })
+                  .then(function () { written++; return writeNext(); });
+              }
+              return writeNext();
+            })
+            .then(function () {
+              done('Saved ' + results.length + ' file(s) to folder. Board updated with local sounds.');
+            })
+            .catch(function (err) {
+              if (err.name === 'AbortError') done('Board updated with local sounds (' + results.length + ').');
+              else done('Saved to board. Folder save failed: ' + (err.message || 'unknown error'));
+            });
+        } else {
+          done('Saved ' + results.length + ' sound(s) into the board. (Use Chrome/Edge to also save files to a folder.)');
+        }
+      }
+
+      fetchAudio(0);
+    }).catch(function (err) {
+      console.warn('downloadAllMedia failed', err);
+      if (downloadStatus) downloadStatus.textContent = 'Download failed.';
+      if (btn) btn.disabled = false;
+    });
   }
 
   function getSoundIndex(soundId) {
