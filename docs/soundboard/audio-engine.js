@@ -109,8 +109,32 @@ function stopSound(soundId) {
   }
 }
 
-function computeNormalizationFromBuffer(buffer) {
+function analyzeCacheKey(fileUrl, sound) {
+  if (!sound || typeof sound !== 'object') return fileUrl;
+  const startMs = sound.startMs != null ? sound.startMs : 0;
+  const endMs = sound.endMs != null ? sound.endMs : '';
+  return fileUrl + '|' + startMs + '|' + endMs;
+}
+
+function computeNormalizationFromBuffer(buffer, sound) {
   if (!buffer) return null;
+
+  const Loudness = window.SoundboardLoudness;
+  if (Loudness && Loudness.computeNormalizationGain) {
+    const opts = {};
+    if (sound && sound.startMs != null) opts.startSec = sound.startMs / 1000;
+    if (sound && sound.endMs != null) opts.endSec = sound.endMs / 1000;
+    const res = Loudness.computeNormalizationGain(buffer, opts);
+    if (res && typeof res.gain === 'number' && isFinite(res.gain)) {
+      return {
+        gain: res.gain,
+        gainDb: res.gainDb,
+        lufs: res.lufs,
+        algoVersion: res.algoVersion || 2
+      };
+    }
+  }
+
   const channels = buffer.numberOfChannels || 0;
   if (!channels) return null;
   const length = buffer.length || 0;
@@ -155,20 +179,22 @@ function computeNormalizationFromBuffer(buffer) {
   if (peakAfterDb > -1) gainDb -= (peakAfterDb - (-1));
 
   const gain = Math.pow(10, gainDb / 20);
-  return { gain, gainDb, rmsDb, peakDb };
+  return { gain, gainDb, rmsDb, peakDb, algoVersion: 1 };
 }
 
-function analyzeFileUrl(fileUrl) {
+function analyzeFileUrl(fileUrl, sound) {
   if (!fileUrl) return Promise.resolve(null);
-  if (normGainCache.has(fileUrl)) {
-    return Promise.resolve({ gain: normGainCache.get(fileUrl), algoVersion: 1 });
+  const cacheKey = analyzeCacheKey(fileUrl, sound);
+  if (normGainCache.has(cacheKey)) {
+    const cached = normGainCache.get(cacheKey);
+    return Promise.resolve(typeof cached === 'object' ? cached : { gain: cached, algoVersion: 1 });
   }
   return loadBuffer(fileUrl).then((buffer) => {
     if (!buffer) return null;
-    const res = computeNormalizationFromBuffer(buffer);
+    const res = computeNormalizationFromBuffer(buffer, sound);
     if (!res || typeof res.gain !== 'number' || !isFinite(res.gain)) return null;
-    normGainCache.set(fileUrl, res.gain);
-    return { ...res, algoVersion: 1 };
+    normGainCache.set(cacheKey, res);
+    return res;
   });
 }
 
@@ -189,11 +215,13 @@ function playSound(sound) {
         : null;
       if (fromExtra != null) {
         normGain = Math.max(0, Math.min(6, fromExtra));
-      } else if (normGainCache.has(sound.fileUrl)) {
-        normGain = Math.max(0, Math.min(6, normGainCache.get(sound.fileUrl)));
+      } else if (normGainCache.has(analyzeCacheKey(sound.fileUrl, sound))) {
+        const cached = normGainCache.get(analyzeCacheKey(sound.fileUrl, sound));
+        const g = typeof cached === 'object' ? cached.gain : cached;
+        normGain = Math.max(0, Math.min(6, g));
       } else {
         // Non-blocking: compute for this session; persistence is handled by "Analyze all".
-        analyzeFileUrl(sound.fileUrl).catch(function () {});
+        analyzeFileUrl(sound.fileUrl, sound).catch(function () {});
       }
     }
     const vol = perSound * normGain;

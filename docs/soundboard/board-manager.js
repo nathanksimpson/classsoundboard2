@@ -58,8 +58,24 @@ const RESERVED_BOARD_KEYS = new Set([
   'description',
   'createdAt',
   'updatedAt',
-  'sounds'
+  'sounds',
+  'quickAccess'
 ]);
+
+const MAX_RECENT_SOUNDS_IN_BOARD = 20;
+
+function normalizeQuickAccess(qa) {
+  if (!qa || typeof qa !== 'object') {
+    return { favourites: [], recents: [] };
+  }
+  const favourites = Array.isArray(qa.favourites)
+    ? qa.favourites.map((id) => String(id).trim()).filter(Boolean)
+    : [];
+  const recents = Array.isArray(qa.recents)
+    ? qa.recents.map((id) => String(id).trim()).filter(Boolean).slice(0, MAX_RECENT_SOUNDS_IN_BOARD)
+    : [];
+  return { favourites, recents };
+}
 
 function normalizeBoard(board) {
   const src = board && typeof board === 'object' ? board : {};
@@ -76,7 +92,8 @@ function normalizeBoard(board) {
     updatedAt: src.updatedAt ?? src.createdAt ?? new Date().toISOString(),
     sounds
   };
-  // Carry forward unknown / forward-compatible top-level fields (e.g. quickAccess).
+  normalized.quickAccess = normalizeQuickAccess(src.quickAccess);
+  // Carry forward unknown / forward-compatible top-level fields.
   Object.keys(src).forEach((key) => {
     if (!RESERVED_BOARD_KEYS.has(key)) {
       normalized[key] = src[key];
@@ -110,11 +127,215 @@ function createDefaultSound(overrides = {}) {
   });
 }
 
+function ensureUniqueSoundId(existingIds, sound) {
+  const base = normalizeSound(sound);
+  if (!existingIds.has(base.id)) return base;
+  let n = 2;
+  let candidate = base.id + '-copy';
+  while (existingIds.has(candidate)) {
+    candidate = base.id + '-copy-' + n;
+    n++;
+  }
+  return { ...base, id: candidate };
+}
+
+const RECENTS_MAX_DEFAULT = 20;
+
+function normalizeRemoteUrl(url) {
+  try {
+    const u = new URL(String(url));
+    return (u.protocol + '//' + u.host + u.pathname).toLowerCase();
+  } catch (_) {
+    return '';
+  }
+}
+
+/**
+ * Audio basename without extension (stable key for zip/http/local paths).
+ */
+function getAudioBasename(fileUrl, soundId) {
+  const fu = String(fileUrl || '').trim();
+  if (!fu) return '';
+  if (fu.startsWith('local:downloaded-')) {
+    return fu.slice('local:downloaded-'.length);
+  }
+  if (fu.startsWith('local:')) {
+    const blobId = fu.slice(6);
+    if (blobId.startsWith('downloaded-')) return blobId.slice('downloaded-'.length);
+    if (soundId) return String(soundId);
+    return '';
+  }
+  let pathPart = fu;
+  if (fu.startsWith('zip:')) pathPart = fu.slice(4);
+  pathPart = pathPart.split('?')[0].split('#')[0];
+  const base = pathPart.split('/').pop() || '';
+  if (!base) return '';
+  return base.replace(/\.[^.]+$/, '');
+}
+
+/**
+ * Keys used to detect the same sound across imports (id, blerpId, audio basename, remote URL).
+ */
+function getSoundMatchKeys(sound) {
+  const keys = [];
+  const s = normalizeSound(sound);
+  if (s.id) keys.push('id:' + s.id);
+  const extra = s.extra && typeof s.extra === 'object' ? s.extra : {};
+  if (extra.blerpId) keys.push('blerp:' + String(extra.blerpId).trim());
+  const audioBase = getAudioBasename(s.fileUrl, s.id);
+  if (audioBase) keys.push('audio:' + audioBase);
+  const fu = s.fileUrl;
+  if (fu && /^https?:/i.test(fu)) {
+    const norm = normalizeRemoteUrl(fu);
+    if (norm) keys.push('url:' + norm);
+  }
+  return keys;
+}
+
+/** Map matchKey -> existing sound id */
+function buildSoundMatchIndex(sounds) {
+  const index = new Map();
+  (sounds || []).forEach((raw) => {
+    const s = normalizeSound(raw);
+    const sid = String(s.id);
+    getSoundMatchKeys(s).forEach((k) => {
+      if (!index.has(k)) index.set(k, sid);
+    });
+  });
+  return index;
+}
+
+function findExistingSoundIdForIncoming(incomingSound, matchIndex) {
+  if (!matchIndex || !matchIndex.size) return null;
+  const keys = getSoundMatchKeys(incomingSound);
+  for (let i = 0; i < keys.length; i++) {
+    const k = keys[i];
+    if (matchIndex.has(k)) return matchIndex.get(k);
+  }
+  return null;
+}
+
+/** Incoming sound ids that are not already on the board (for ZIP blob extraction). */
+function getNewIncomingSoundIds(existing, incoming) {
+  const base = normalizeBoard(existing && typeof existing === 'object' ? existing : { sounds: [] });
+  const inc = normalizeBoard(incoming && typeof incoming === 'object' ? incoming : { sounds: [] });
+  const matchIndex = buildSoundMatchIndex(base.sounds);
+  const ids = new Set();
+  (inc.sounds || []).forEach((raw) => {
+    const sound = normalizeSound(raw);
+    if (findExistingSoundIdForIncoming(sound, matchIndex)) return;
+    ids.add(String(sound.id));
+  });
+  return ids;
+}
+
+/**
+ * Merge incoming board sounds into existing board.
+ * options.duplicateStrategy: 'skip' | 'replace' | 'rename' (default 'skip')
+ */
+function mergeBoards(existing, incoming, options) {
+  const opts = options && typeof options === 'object' ? options : {};
+  const duplicateStrategy = opts.duplicateStrategy === 'replace' || opts.duplicateStrategy === 'rename'
+    ? opts.duplicateStrategy
+    : 'skip';
+
+  const base = normalizeBoard(existing && typeof existing === 'object' ? existing : { sounds: [] });
+  const inc = normalizeBoard(incoming && typeof incoming === 'object' ? incoming : { sounds: [] });
+  const merged = JSON.parse(JSON.stringify(base));
+  const existingIds = new Set((merged.sounds || []).map((s) => String(s.id)));
+  const matchIndex = buildSoundMatchIndex(merged.sounds);
+  const existingHotkeys = new Map();
+  (merged.sounds || []).forEach((s) => {
+    const hk = String(s.hotkey || '').trim();
+    if (hk) existingHotkeys.set(hk, s.id);
+  });
+
+  let added = 0;
+  let skipped = 0;
+  let hotkeyConflicts = 0;
+  let matchedById = 0;
+  let matchedByKey = 0;
+
+  (inc.sounds || []).forEach((rawSound) => {
+    const sound = normalizeSound(rawSound);
+    const id = String(sound.id);
+    const matchedExistingId = findExistingSoundIdForIncoming(sound, matchIndex);
+    const isDuplicate = matchedExistingId != null || existingIds.has(id);
+
+    if (isDuplicate) {
+      if (duplicateStrategy === 'replace' && existingIds.has(id)) {
+        const idx = merged.sounds.findIndex((s) => String(s.id) === id);
+        if (idx >= 0) merged.sounds[idx] = sound;
+        added++;
+      } else if (duplicateStrategy === 'rename' && !matchedExistingId) {
+        const unique = ensureUniqueSoundId(existingIds, sound);
+        merged.sounds.push(unique);
+        existingIds.add(unique.id);
+        getSoundMatchKeys(unique).forEach((k) => { if (!matchIndex.has(k)) matchIndex.set(k, unique.id); });
+        added++;
+      } else {
+        if (matchedExistingId && matchedExistingId !== id) matchedByKey++;
+        else if (existingIds.has(id)) matchedById++;
+        skipped++;
+      }
+      return;
+    }
+
+    const hk = String(sound.hotkey || '').trim();
+    if (hk && existingHotkeys.has(hk)) {
+      sound.hotkey = '';
+      hotkeyConflicts++;
+    } else if (hk) {
+      existingHotkeys.set(hk, sound.id);
+    }
+
+    merged.sounds.push(sound);
+    existingIds.add(sound.id);
+    getSoundMatchKeys(sound).forEach((k) => { if (!matchIndex.has(k)) matchIndex.set(k, sound.id); });
+    added++;
+  });
+
+  // Merge quickAccess favourites/recents if present on incoming board.
+  const incQa = inc.quickAccess && typeof inc.quickAccess === 'object' ? inc.quickAccess : null;
+  if (incQa) {
+    if (!merged.quickAccess || typeof merged.quickAccess !== 'object') {
+      merged.quickAccess = {};
+    }
+    const favSet = new Set(Array.isArray(merged.quickAccess.favourites) ? merged.quickAccess.favourites.map(String) : []);
+    (Array.isArray(incQa.favourites) ? incQa.favourites : []).forEach((id) => {
+      if (existingIds.has(String(id))) favSet.add(String(id));
+    });
+    merged.quickAccess.favourites = Array.from(favSet);
+
+    const recentList = Array.isArray(merged.quickAccess.recents) ? merged.quickAccess.recents.map(String) : [];
+    const recentSet = new Set(recentList);
+    (Array.isArray(incQa.recents) ? incQa.recents : []).forEach((id) => {
+      const sid = String(id);
+      if (existingIds.has(sid) && !recentSet.has(sid)) {
+        recentList.push(sid);
+        recentSet.add(sid);
+      }
+    });
+    merged.quickAccess.recents = recentList.slice(-RECENTS_MAX_DEFAULT);
+  }
+
+  return {
+    board: merged,
+    stats: { added, skipped, hotkeyConflicts, matchedById, matchedByKey }
+  };
+}
+
 window.SoundboardBoardManager = {
   validateSound,
   validateBoard,
   normalizeSound,
   normalizeBoard,
   generateId,
-  createDefaultSound
+  createDefaultSound,
+  ensureUniqueSoundId,
+  getSoundMatchKeys,
+  buildSoundMatchIndex,
+  findExistingSoundIdForIncoming,
+  getNewIncomingSoundIds,
+  mergeBoards
 };

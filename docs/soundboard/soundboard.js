@@ -73,6 +73,8 @@
   const portableReportTitleEl = document.getElementById('portable-report-title');
   const portableReportSummaryEl = document.getElementById('portable-report-summary');
   const portableReportListEl = document.getElementById('portable-report-list');
+  const importModeMergeEl = document.getElementById('import-mode-merge');
+  const importModeReplaceEl = document.getElementById('import-mode-replace');
 
   function getBoardJsonPath() {
     const base = window.location.pathname.replace(/\/[^/]*$/, '') || '/';
@@ -126,6 +128,7 @@
   const CATEGORY_UI_KEY_PREFIX = 'soundboard-category-state:';
   const CATEGORY_ORDER_KEY_PREFIX = 'soundboard-category-order:';
   const AUTO_LEVEL_KEY = 'soundboard-auto-level';
+  const IMPORT_MODE_KEY = 'soundboard-import-mode';
   const LANGUAGE_KEY = 'soundboard-language';
   const THEME_KEY = 'soundboard-theme';
   const FAVOURITES_KEY_PREFIX = 'soundboard-favourites:';
@@ -167,6 +170,8 @@
       'toolbar.clearDataTitle': 'Clear all saved board/app data and reset to defaults',
       'toolbar.importDropzone': 'Import Sounds (Drag and drop or click)',
       'toolbar.importDropzoneTitle': 'Import sounds: drag and drop a .json board file, or click to choose one',
+      'toolbar.importMerge': 'Merge into board',
+      'toolbar.importReplace': 'Replace entire board',
       'toolbar.group.audio': 'Audio Tools',
       'toolbar.downloadMedia': 'Download media',
       'toolbar.downloadMediaTitle': 'Download audio + images, save into the app, and update the board to use local copies',
@@ -223,6 +228,8 @@
       'status.analysisUnavailable': 'Analysis not available.',
       'status.analyzingProgress': 'Analyzing {current}/{total}…',
       'status.analyzeComplete': 'Analyze complete.',
+      'status.mergedImport': 'Merged: {added} added, {skipped} already on board (your settings kept).',
+      'status.mergedImportHotkeys': 'Merged: {added} added, {skipped} kept. {hotkeyConflicts} hotkey conflicts cleared.',
       'status.invalidImportFile': 'Please drop a valid .json or .zip board file.',
       'status.clearedAllData': 'All saved data cleared. Loaded default board.',
       'confirm.clearAllData': 'Clear all saved data (board, settings, local audio cache) and reset to defaults?',
@@ -269,6 +276,8 @@
       'toolbar.clearDataTitle': '저장된 보드/앱 데이터를 모두 삭제하고 기본값으로 재설정',
       'toolbar.importDropzone': '사운드 가져오기 (드래그 앤 드롭 또는 클릭)',
       'toolbar.importDropzoneTitle': '사운드 가져오기: .json 보드 파일을 드래그 앤 드롭하거나 클릭해 선택하세요',
+      'toolbar.importMerge': '보드에 병합',
+      'toolbar.importReplace': '보드 전체 교체',
       'toolbar.group.audio': '오디오 도구',
       'toolbar.downloadMedia': '미디어 다운로드',
       'toolbar.downloadMediaTitle': '오디오 + 이미지를 다운로드해 앱에 저장하고 로컬 파일로 업데이트',
@@ -325,6 +334,8 @@
       'status.analysisUnavailable': '분석 기능을 사용할 수 없습니다.',
       'status.analyzingProgress': '{current}/{total} 분석 중…',
       'status.analyzeComplete': '분석 완료.',
+      'status.mergedImport': '병합됨: {added}개 추가, {skipped}개는 이미 보드에 있음(설정 유지).',
+      'status.mergedImportHotkeys': '병합됨: {added}개 추가, {skipped}개 유지. 단축키 충돌 {hotkeyConflicts}개 해제.',
       'status.invalidImportFile': '올바른 .json 또는 .zip 보드 파일을 드롭해 주세요.',
       'status.clearedAllData': '저장된 모든 데이터를 삭제하고 기본 보드를 불러왔습니다.',
       'confirm.clearAllData': '저장된 모든 데이터(보드, 설정, 로컬 오디오 캐시)를 삭제하고 기본값으로 재설정할까요?',
@@ -1965,8 +1976,12 @@
 
   function shouldAnalyzeSound(sound) {
     if (!sound || !sound.fileUrl) return false;
-    const gain = sound.extra && typeof sound.extra === 'object' ? sound.extra.normGain : null;
-    return !(typeof gain === 'number' && isFinite(gain));
+    const extra = sound.extra && typeof sound.extra === 'object' ? sound.extra : {};
+    const gain = extra.normGain;
+    const ver = extra.normAlgoVersion;
+    if (!(typeof gain === 'number' && isFinite(gain))) return true;
+    if (typeof ver !== 'number' || ver < 2) return true;
+    return false;
   }
 
   function runAutoAnalyzeOnLoad() {
@@ -2123,18 +2138,17 @@
   function ensureAutoAnalysis(sound) {
     if (!sound || !Audio) return;
     if (Audio.getAutoLevelEnabled && Audio.getAutoLevelEnabled() && Audio.analyzeFileUrl && sound.fileUrl) {
-      const has = sound.extra && typeof sound.extra.normGain === 'number' && isFinite(sound.extra.normGain);
-      if (!has) {
-        if (!sound.extra || typeof sound.extra !== 'object') sound.extra = {};
-        Audio.analyzeFileUrl(sound.fileUrl).then(function (res) {
-          if (res && typeof res.gain === 'number' && isFinite(res.gain)) {
-            sound.extra.normGain = res.gain;
-            sound.extra.normAnalyzedAt = new Date().toISOString();
-            sound.extra.normAlgoVersion = res.algoVersion || 1;
-            saveToStorage();
-          }
-        }).catch(function () {});
-      }
+      if (!shouldAnalyzeSound(sound)) return;
+      if (!sound.extra || typeof sound.extra !== 'object') sound.extra = {};
+      Audio.analyzeFileUrl(sound.fileUrl, sound).then(function (res) {
+        if (res && typeof res.gain === 'number' && isFinite(res.gain)) {
+          sound.extra.normGain = res.gain;
+          sound.extra.normAnalyzedAt = new Date().toISOString();
+          sound.extra.normAlgoVersion = res.algoVersion || 1;
+          if (typeof res.lufs === 'number' && isFinite(res.lufs)) sound.extra.normLufs = res.lufs;
+          saveToStorage();
+        }
+      }).catch(function () {});
     }
   }
 
@@ -3302,16 +3316,109 @@
     }
   }
 
+  function getImportMode() {
+    if (importModeReplaceEl && importModeReplaceEl.checked) return 'replace';
+    return 'merge';
+  }
+
+  function loadImportModePreference() {
+    try {
+      const saved = localStorage.getItem(IMPORT_MODE_KEY);
+      if (saved === 'replace') {
+        if (importModeReplaceEl) importModeReplaceEl.checked = true;
+        if (importModeMergeEl) importModeMergeEl.checked = false;
+      } else {
+        if (importModeMergeEl) importModeMergeEl.checked = true;
+        if (importModeReplaceEl) importModeReplaceEl.checked = false;
+      }
+    } catch (_) {}
+  }
+
+  function saveImportModePreference(mode) {
+    try {
+      localStorage.setItem(IMPORT_MODE_KEY, mode === 'replace' ? 'replace' : 'merge');
+    } catch (_) {}
+  }
+
+  function showMergeImportStatus(stats) {
+    if (!stats || !downloadStatus) return;
+    const msg = stats.hotkeyConflicts > 0
+      ? t('status.mergedImportHotkeys', stats)
+      : t('status.mergedImport', stats);
+    downloadStatus.textContent = msg;
+    setTimeout(function () {
+      if (downloadStatus && downloadStatus.textContent === msg) downloadStatus.textContent = '';
+    }, 4500);
+  }
+
+  function finishBoardImport(incomingBoard, options) {
+    if (!incomingBoard) return;
+    const opts = options && typeof options === 'object' ? options : {};
+    const fromFileMode = !!opts.fromFileMode;
+    const mode = fromFileMode ? 'replace' : getImportMode();
+    let boardToSet = incomingBoard;
+    let mergeStats = null;
+
+    if (mode === 'merge' && currentBoard && Board.mergeBoards) {
+      const merged = Board.mergeBoards(currentBoard, incomingBoard, { duplicateStrategy: 'skip' });
+      boardToSet = merged.board;
+      mergeStats = merged.stats;
+    }
+
+    setBoard(boardToSet);
+    const canPersistAudio = opts.canPersistAudio !== false;
+    if (canPersistAudio) saveToStorageNow();
+    if (fromFileMode) {
+      fileModeWritePending = false;
+      if (fileModeWriteTimer) { clearTimeout(fileModeWriteTimer); fileModeWriteTimer = null; }
+    }
+    if (Audio && Audio.clearCache) Audio.clearCache();
+    if (Audio && Audio.preloadSounds && boardToSet.sounds) {
+      Audio.preloadSounds(boardToSet.sounds, boardToSet.sounds.length);
+    }
+
+    const warnings = Array.isArray(opts.warnings) ? opts.warnings : [];
+    if (warnings.length) {
+      openPortableReport('Portable import warnings', 'Some files referenced in the board could not be found in the ZIP.', warnings);
+    }
+    if (mergeStats) {
+      showMergeImportStatus(mergeStats);
+    } else if (downloadStatus) {
+      const msg = warnings.length ? 'Portable ZIP imported (with warnings).' : (mode === 'merge' ? 'Import complete.' : 'Board replaced from import.');
+      downloadStatus.textContent = msg;
+      setTimeout(function () { if (downloadStatus && downloadStatus.textContent === msg) downloadStatus.textContent = ''; }, warnings.length ? 4500 : 2500);
+    }
+  }
+
   async function importPortableZip(file, options) {
     if (!file) return;
-    const fromFileMode = !!(options && options.fromFileMode);
+    if (downloadStatus) downloadStatus.textContent = 'Reading zip…';
+    try {
+      const parsed = await parsePortableZipFile(file, options);
+      if (!parsed) return;
+      finishBoardImport(parsed.board, {
+        fromFileMode: !!(options && options.fromFileMode),
+        warnings: parsed.warnings,
+        canPersistAudio: parsed.canPersistAudio
+      });
+    } catch (e) {
+      alert('Invalid ZIP file.');
+      console.warn('zip import failed', e);
+    } finally {
+      if (downloadStatus && downloadStatus.textContent === 'Reading zip…') {
+        downloadStatus.textContent = '';
+      }
+    }
+  }
+
+  async function parsePortableZipFile(file, options) {
+    if (!file) return null;
     if (!window.JSZip) {
       alert('ZIP import not available (JSZip missing).');
-      return;
+      return null;
     }
     const LocalAudio = window.SoundboardLocalAudio;
     const canPersistAudio = !!(LocalAudio && LocalAudio.putBlob);
-    if (downloadStatus) downloadStatus.textContent = 'Reading zip…';
     const buf = await (file.arrayBuffer ? file.arrayBuffer() : new Promise((resolve, reject) => {
       const r = new FileReader();
       r.onload = () => resolve(r.result);
@@ -3322,26 +3429,32 @@
     const boardFile = zip.file('board.json');
     if (!boardFile) {
       alert('ZIP missing board.json');
-      return;
+      return null;
     }
     const boardText = await boardFile.async('text');
     const parsed = JSON.parse(boardText);
     const result = Board.validateBoard(parsed);
     if (!result.ok) {
       alert('Invalid board in ZIP: ' + (result.error || 'unknown'));
-      return;
+      return null;
     }
     const board = Board.normalizeBoard(parsed);
     const sounds = Array.isArray(board.sounds) ? board.sounds : [];
     const importNonce = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
     const warnings = [];
-    let importedAudioCount = 0;
+    const opts = options && typeof options === 'object' ? options : {};
+    const importMode = opts.fromFileMode ? 'replace' : getImportMode();
+    let newSoundIds = null;
+    if (importMode === 'merge' && currentBoard && Board.getNewIncomingSoundIds) {
+      newSoundIds = Board.getNewIncomingSoundIds(currentBoard, board);
+    }
     let i = 0;
+    const extractTotal = newSoundIds ? newSoundIds.size : sounds.length;
     for (const s of sounds) {
+      if (newSoundIds && !newSoundIds.has(String(s.id))) continue;
       i++;
-      if (downloadStatus) downloadStatus.textContent = 'Importing ' + i + '/' + sounds.length + '…';
+      if (downloadStatus) downloadStatus.textContent = 'Importing ' + i + '/' + extractTotal + '…';
 
-      // Audio from zip:
       const fu = String(s.fileUrl || '');
       if (fu.startsWith('zip:')) {
         const path = fu.slice(4);
@@ -3358,13 +3471,11 @@
             s.fileUrl = blobUrl;
             warnings.push('Audio is loaded for this session only (no IndexedDB): ' + (s.title || s.id));
           }
-          importedAudioCount++;
         } else {
           warnings.push('Missing audio in zip: ' + path);
         }
       }
 
-      // Image from zip -> embed as data URL:
       const iu = String(s.imageUrl || '');
       if (iu.startsWith('zip:')) {
         const path = iu.slice(4);
@@ -3393,25 +3504,7 @@
       }
     }
 
-    setBoard(board);
-    // Only persist when audio is persistable; otherwise we would save blob: URLs that break on refresh.
-    // When we're loading from the attached file (fromFileMode), we still
-    // persist to localStorage/IDB so the in-session save path is consistent.
-    if (canPersistAudio) saveToStorageNow();
-    if (fromFileMode) {
-      // Skip writing back to the file we just read (avoid noisy round-trips).
-      fileModeWritePending = false;
-      if (fileModeWriteTimer) { clearTimeout(fileModeWriteTimer); fileModeWriteTimer = null; }
-    }
-    if (Audio && Audio.clearCache) Audio.clearCache();
-    render();
-    if (warnings.length) {
-      openPortableReport('Portable import warnings', 'Some files referenced in the board could not be found in the ZIP.', warnings);
-    }
-    if (downloadStatus) {
-      downloadStatus.textContent = warnings.length ? 'Portable ZIP imported (with warnings).' : 'Portable ZIP imported.';
-      setTimeout(function () { if (downloadStatus) downloadStatus.textContent = ''; }, warnings.length ? 4500 : 2500);
-    }
+    return { board, warnings, canPersistAudio };
   }
 
   async function runPortableReadinessCheck() {
@@ -3760,8 +3853,7 @@
           alert('Invalid board format: ' + (result.error || 'unknown'));
           return;
         }
-        setBoard(Board.normalizeBoard(data));
-        saveToStorageNow();
+        finishBoardImport(Board.normalizeBoard(data), { canPersistAudio: true });
       } catch (e) {
         alert('Invalid JSON file.');
       }
@@ -3996,6 +4088,17 @@
         console.warn('portable check failed', e);
       });
     });
+    if (importModeMergeEl) {
+      importModeMergeEl.addEventListener('change', function () {
+        if (importModeMergeEl.checked) saveImportModePreference('merge');
+      });
+    }
+    if (importModeReplaceEl) {
+      importModeReplaceEl.addEventListener('change', function () {
+        if (importModeReplaceEl.checked) saveImportModePreference('replace');
+      });
+    }
+    loadImportModePreference();
     if (clearDataBtn) clearDataBtn.addEventListener('click', clearAllDataAndReset);
     if (downloadBtn) downloadBtn.addEventListener('click', downloadAllMedia);
     if (fileModeAttachBtn) fileModeAttachBtn.addEventListener('click', function () {
@@ -4218,11 +4321,12 @@
       if (!s || !s.fileUrl) return setTimeout(step, 0);
       if (!s.extra || typeof s.extra !== 'object') s.extra = {};
 
-      Audio.analyzeFileUrl(s.fileUrl).then(function (res) {
+      Audio.analyzeFileUrl(s.fileUrl, s).then(function (res) {
         if (res && typeof res.gain === 'number' && isFinite(res.gain)) {
           s.extra.normGain = res.gain;
           s.extra.normAnalyzedAt = new Date().toISOString();
           s.extra.normAlgoVersion = res.algoVersion || 1;
+          if (typeof res.lufs === 'number' && isFinite(res.lufs)) s.extra.normLufs = res.lufs;
           updated++;
         }
       }).catch(function () {}).finally(function () {

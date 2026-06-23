@@ -305,6 +305,27 @@ body.body--overlay-open {
   outline: none;
 }
 
+.import-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  width: 100%;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 4px 0 2px;
+}
+
+.import-mode__option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.import-mode__option input {
+  margin: 0;
+}
+
 .import-dropzone--active {
   border-color: var(--primary);
   color: #fff;
