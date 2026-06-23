@@ -86,6 +86,7 @@
   // Bump when updating docs/soundboard/boards/from-blerp-portable/ so visitors reload the new default.
   const BUNDLED_DEFAULT_VERSION_KEY = 'soundboard-bundled-default-version';
   const BUNDLED_DEFAULT_VERSION = 'from-blerp-portable-v3';
+  const APP_BUILD = '20260623-1';
 
   function rewritePortableZipUrls(board, boardJsonUrl) {
     if (!board || !Array.isArray(board.sounds)) return board;
@@ -2284,7 +2285,7 @@
       const location = Storage && Storage.getBoardLocation ? Storage.getBoardLocation() : 'local';
       const soundCount = currentBoard && Array.isArray(currentBoard.sounds) ? currentBoard.sounds.length : 0;
       const locationLabel = location === 'idb' ? 'IndexedDB' : 'browser storage';
-      storageInfoEl.textContent = 'Saved to ' + locationLabel + ' \u00b7 ' + soundCount + ' sound' + (soundCount === 1 ? '' : 's') + '.';
+      storageInfoEl.textContent = 'Saved to ' + locationLabel + ' \u00b7 ' + soundCount + ' sound' + (soundCount === 1 ? '' : 's') + ' \u00b7 build ' + APP_BUILD + '.';
     } catch (err) {
       console.warn('soundboard: updateStorageInfo failed', err);
     }
